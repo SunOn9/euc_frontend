@@ -1,6 +1,6 @@
-# Next.js & NextUI Template
+# EUC FRONTEND
 
-This is a template for creating applications using Next.js 13 (app directory) and NextUI (v2).
+## NOTE: For Linux or MacOS. Window need use WSL
 
 ## Technologies Used
 
@@ -12,28 +12,21 @@ This is a template for creating applications using Next.js 13 (app directory) an
 - [Framer Motion](https://www.framer.com/motion/)
 - [next-themes](https://github.com/pacocoursey/next-themes)
 
-## How to Use
+### Install yarn & next js
 
+#### Yarn : https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable
 
-### Use the template with create-next-app
+Via NPM : `npm install --global yarn`
 
-To create a new project based on this template using `create-next-app`, run the following command:
+### How to use ?
 
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
+#### Install dependencies
 
-### Install dependencies
+Via yarn : `yarn`
 
-```bash
-npm install
-```
+#### Run
 
-### Run the development server
-
-```bash
-npm run dev
-```
+`yarn start` or `yarn dev`
 
 ## License
 
