@@ -15,8 +15,8 @@ import clsx from "clsx";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { FacebookIcon, InstagramIcon } from "@/components/icons";
 import { title } from "@/components/primitives";
-import { Logo } from "@/components/icons";
 import UserSetting from "./user-setting";
+import Logo from "./logo";
 
 export const Navbar = () => {
   return (
@@ -24,7 +24,7 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
+            <Logo width={40} />
             <p
               className={clsx(
                 title({ color: "yellow", size: "xsm" }),

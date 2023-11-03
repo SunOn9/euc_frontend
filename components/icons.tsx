@@ -1,23 +1,6 @@
 import * as React from "react";
 import { IconSvgProps } from "@/types";
 
-export const Logo: React.FC<IconSvgProps> = ({
-  size = 36,
-  width,
-  height,
-  ...props
-}) => (
-  <svg
-    fill="none"
-    height={size || height}
-    viewBox="0 0 32 32"
-    width={size || width}
-    {...props}
-  >
-    <path href="/icon-2.png" />
-  </svg>
-);
-
 export const FacebookIcon: React.FC<IconSvgProps> = ({
   size = 24,
   width,
