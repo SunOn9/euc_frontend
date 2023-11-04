@@ -19,7 +19,11 @@ export default function LoginForm() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <Card className="p-3 lg:min-w-[30%] md:min-w-[40%]	sm:min-w-[50%]">
+    <Card
+      isBlurred
+      shadow="sm"
+      className="p-3 min-w-[35%] bg-background/60 dark:bg-default-100/50"
+    >
       <CardHeader className="pb-4 pt-2 px-4 flex-col items-start">
         <h4 className="font-bold text-large">Login to EUC</h4>
         <small className="text-default-500">Welcome to EUC</small>
@@ -42,12 +46,9 @@ export default function LoginForm() {
           /* and other goodies */
         }) => (
           <CardBody className="overflow-visible py-2">
-            <form
-              className="flex flex-col place-items-center	"
-              onSubmit={handleSubmit}
-            >
+            <form className="flex flex-col" onSubmit={handleSubmit}>
               <Input
-                className="pb-5"
+                className="pb-2"
                 type="email"
                 label="Email"
                 name="email"
@@ -59,7 +60,7 @@ export default function LoginForm() {
                 }
               />
               <Input
-                className="pb-5 "
+                className="pb-2 "
                 label="Password"
                 name="password"
                 placeholder="Enter your password "
@@ -84,18 +85,20 @@ export default function LoginForm() {
                   errors.password && touched.password ? errors.password : " "
                 }
               />
-              <Link
-                href={"/"}
-                className={text({
-                  color: "cyan",
-                })}
-              >
-                Forgot your password ?
-              </Link>
+              <div className="place-self-end pb-2">
+                <Link
+                  href={"/"}
+                  className={text({
+                    color: "cyan",
+                  })}
+                >
+                  Forgot your password?
+                </Link>
+              </div>
               <Button
                 radius="full"
                 className={clsx(
-                  "bg-gradient-to-tr from-[#FF705B] to-[#FFB457] text-white shadow-lg"
+                  "bg-gradient-to-tr from-[#FF705B] to-[#FFB457] text-white shadow-lg place-self-center"
                 )}
                 type="submit"
                 isLoading={isSubmitting}

@@ -4,6 +4,7 @@ export type navItem = {
   key: string;
   label: string;
   href: string;
+  children?: Omit<navItem, 'children'>[]
 };
 
 export const siteConfig = {
@@ -13,19 +14,24 @@ export const siteConfig = {
     {
       key: "home",
       label: "Home",
-      href: "/",
+      href: "/dashboard",
     },
     {
       key: "user",
       label: "User",
-      href: "/user",
+      href: "/dashboard/user",
+      children: [{
+        key: "create-user",
+        label: "Create User",
+        href: "/dashboard/user/create",
+      }]
     },
   ] as navItem[],
   navUserSettingItems: [
     {
       key: "user-info",
       label: "User info",
-      href: "/user",
+      href: "/dashboard/user",
     },
     {
       key: "change-password",

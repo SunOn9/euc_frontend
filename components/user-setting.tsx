@@ -19,7 +19,7 @@ export default function UserSetting() {
   return (
     <div className="flex items-center gap-4">
       <Dropdown>
-        <UserCustom name="test" description="test" />
+        <UserCustom name="Le Ho Phat Tai" description="lehophattai" />
         <DropdownMenu aria-label="Dynamic Actions" selectionMode="none">
           {siteConfig.navUserSettingItems.map((item, index) => {
             return (

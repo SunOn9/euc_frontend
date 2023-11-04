@@ -54,7 +54,7 @@ export const subtitle = tv({
 });
 
 export const text = tv({
-  base: "w-full md:w-1/2 my-2 text-base	 lg:text-base	 text-default-600 block max-w-full",
+  base: " md:w-1/2 my-2 text-sm text-default-600",
   variants: {
     color: {
       violet: "from-[#FF1CF7] to-[#b249f8]",
@@ -64,10 +64,6 @@ export const text = tv({
       green: "from-[#6FEE8D] to-[#17c964]",
       pink: "from-[#FF72E1] to-[#F54C7A]",
       foreground: "dark:from-[#FFFFFF] dark:to-[#4B4B4B]",
-    },
-
-    fullWidth: {
-      true: "w-full block",
     },
   },
 

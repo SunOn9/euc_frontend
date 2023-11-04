@@ -17,13 +17,17 @@ import { FacebookIcon, InstagramIcon } from "@/components/icons";
 import { title } from "@/components/primitives";
 import UserSetting from "./user-setting";
 import Logo from "./logo";
+import NavBarDropDown from "./navbar-dropdown";
 
 export const Navbar = () => {
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+          <NextLink
+            className="flex justify-start items-center gap-1"
+            href="/dashboard"
+          >
             <Logo width={40} />
             <p
               className={clsx(
@@ -36,9 +40,12 @@ export const Navbar = () => {
           </NextLink>
         </NavbarBrand>
         <ul className="hidden md:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.key}>
+          {siteConfig.navItems.map((item) =>
+            item.children ? (
+              <NavBarDropDown key={item.key} item={item} />
+            ) : (
               <NextLink
+                key={item.key}
                 className={clsx(
                   linkStyles({ color: "foreground" }),
                   "data-[active=true]:text-primary data-[active=true]:font-medium"
@@ -48,8 +55,8 @@ export const Navbar = () => {
               >
                 {item.label}
               </NextLink>
-            </NavbarItem>
-          ))}
+            )
+          )}
         </ul>
       </NavbarContent>
       <NavbarContent
