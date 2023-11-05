@@ -9,7 +9,7 @@ export default function LoginLayout({
     <div className="relative flex flex-col h-screen">
       <div className="flex justify-end">
         <ThemeSwitch className="absolute top-0 right-0 mt-4 mr-4" />
-      </div>{" "}
+      </div>
       <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
         {children}
       </main>

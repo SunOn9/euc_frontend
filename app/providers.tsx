@@ -7,7 +7,7 @@ import { ThemeProviderProps } from "next-themes/dist/types";
 import dynamic from "next/dynamic";
 
 const NextUIProvider = dynamic(
-  () => import("@nextui-org/system").then((mod) => mod.NextUIProvider),
+  () => import("@nextui-org/system").then((module) => module.NextUIProvider),
   {
     ssr: false,
   }
