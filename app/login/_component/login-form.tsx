@@ -1,22 +1,50 @@
 "use client";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons";
 import { text } from "@/components/primitives";
+import { LoginRequest } from "@/generated/auth/auth.request";
+import { login } from "@/service/api/auth/login";
 import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react";
 import clsx from "clsx";
 import { Formik } from "formik";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { useState } from "react";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 export default function LoginForm() {
+  //schema valie
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Required"),
+    username: Yup.string().required("Required").email("Invalid email"),
     password: Yup.string().required("Required"),
   });
 
+  //show password button
   const [isVisible, setIsVisible] = useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isLoading, setIsLoading] = useState(false);
+
+  //handle login
+  const handleLogin = async (value: LoginRequest) => {
+    await login({ ...value, data: {} }).then((res) => {
+      const sessionId = res.extraData?.sessionId;
+      if (sessionId !== undefined) {
+        Cookies.set("euc.sessionid", sessionId);
+      }
+
+      toast.success(`Success`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    });
+    setIsLoading(false);
+  };
 
   return (
     <Card
@@ -29,10 +57,11 @@ export default function LoginForm() {
         <small className="text-default-500">Welcome to EUC</small>
       </CardHeader>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={LoginRequest.create()}
         validationSchema={LoginSchema}
-        onSubmit={(values) => {
-          console.log(values);
+        onSubmit={async (values) => {
+          setIsLoading(true);
+          await handleLogin(values);
         }}
       >
         {({
@@ -42,7 +71,6 @@ export default function LoginForm() {
           handleChange,
           handleBlur,
           handleSubmit,
-          isSubmitting,
           /* and other goodies */
         }) => (
           <CardBody className="overflow-visible py-2">
@@ -51,12 +79,13 @@ export default function LoginForm() {
                 className="pb-2"
                 type="email"
                 label="Email"
-                name="email"
+                name="username"
+                placeholder="Enter your email"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.email}
+                value={values.username}
                 errorMessage={
-                  errors.email && touched.email ? errors.email : " "
+                  errors.username && touched.username ? errors.username : " "
                 }
               />
               <Input
@@ -101,7 +130,7 @@ export default function LoginForm() {
                   "bg-gradient-to-tr from-[#FF705B] to-[#FFB457] text-white shadow-lg place-self-center"
                 )}
                 type="submit"
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Submit
               </Button>
