@@ -37,7 +37,7 @@ export default function LoginForm() {
         setIsLoading(false);
 
         if (res.statusCode !== 200) {
-          toast.error("Wow so easy!", {
+          toast.error(`${res.message}`, {
             position: "bottom-left",
             autoClose: 2000,
             hideProgressBar: true,
@@ -58,6 +58,7 @@ export default function LoginForm() {
             Cookies.set("euc.sessionid", sessionId);
           }
 
+          localStorage.setItem("user-info", JSON.stringify(res.payload));
           router.push("/dashboard");
         }
       })

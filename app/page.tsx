@@ -1,6 +1,4 @@
-"use client";
 import { title, subtitle } from "@/components/primitives";
-import { Button } from "@nextui-org/react";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
@@ -13,8 +11,6 @@ export default function Home() {
         <h1 className={title()}>Ultimate Club&nbsp;</h1>
         <h2 className={subtitle({ class: "mt-4" })}></h2>
       </div>
-
-      <Button type="submit"></Button>
     </section>
   );
 }

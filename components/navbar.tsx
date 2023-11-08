@@ -1,3 +1,4 @@
+"use client";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -18,8 +19,19 @@ import { FacebookIcon, InstagramIcon } from "@/components/icons";
 import UserSetting from "./user-setting";
 import Logo from "./logo";
 import NavBarDropDown from "./navbar-dropdown";
+import { User } from "@/generated/user/user";
+import { useEffect, useState } from "react";
 
 export const Navbar = () => {
+  const [userInfo, setUserInfo] = useState(User.create());
+
+  useEffect(() => {
+    const item: User = JSON.parse(localStorage.getItem("user-info") ?? "");
+    if (item) {
+      setUserInfo(item);
+    }
+  }, []);
+
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -79,7 +91,7 @@ export const Navbar = () => {
           >
             <InstagramIcon className="text-default-500" />
           </Link>
-          <UserSetting name="" email="" />
+          <UserSetting name={userInfo.name} email={userInfo.email} />
         </NavbarItem>
       </NavbarContent>
       <NavbarContent className="md:hidden basis-1 pl-4" justify="end">

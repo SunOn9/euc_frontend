@@ -1,12 +1,12 @@
 import { getHttpClient } from "@/config/httpClientsHelper";
-import { UserListReply } from "@/generated/user/user.reply";
+import { UserReply } from "@/generated/user/user.reply";
 import { GetUserConditionRequest } from "@/generated/user/user.request";
 
-const API_URL = "/user/list";
+const API_URL = "/user/detail";
 
-export async function userSearch(
+export async function userDetail(
   request: GetUserConditionRequest
-): Promise<UserListReply> {
+): Promise<UserReply> {
   const httpClient = await getHttpClient();
   const resp = await httpClient.get(API_URL, { params: request });
   return resp.data;

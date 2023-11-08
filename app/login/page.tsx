@@ -1,6 +1,5 @@
 import { title } from "@/components/primitives";
 import LoginForm from "./_component/login-form";
-import { ToastContainer } from "react-toastify";
 
 export default function Login() {
   return (
@@ -10,7 +9,6 @@ export default function Login() {
         <h1 className={title()}>Ultimate&nbsp;</h1>
       </div>
       <LoginForm />
-      <ToastContainer />
     </section>
   );
 }

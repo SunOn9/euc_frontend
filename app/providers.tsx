@@ -4,9 +4,9 @@ import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import dynamic from "next/dynamic";
-
-import { Provider } from "react-redux";
-import store from "@/store/store";
+import { ToastContainer } from "react-toastify";
+import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const NextUIProvider = dynamic(
   () => import("@nextui-org/system").then((module) => module.NextUIProvider),
@@ -21,11 +21,14 @@ export interface ProvidersProps {
 }
 
 export function Providers({ children, themeProps }: ProvidersProps) {
+  const [client] = useState(new QueryClient());
+
   return (
-    <Provider store={store}>
+    <QueryClientProvider client={client}>
       <NextUIProvider>
         <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+        <ToastContainer />
       </NextUIProvider>
-    </Provider>
+    </QueryClientProvider>
   );
 }
