@@ -22,7 +22,7 @@ export default function UserCustom(props: Props) {
             {props.name}
           </div>
           <div className="text-left w-full md:w-1/2 ml-1 text-sxs lg:text-xs text-default-500 block max-w-full">
-            {`@${props.description}`}
+            {props.description}
           </div>
         </div>
       </Button>

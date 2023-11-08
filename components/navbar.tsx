@@ -14,7 +14,7 @@ import NextLink from "next/link";
 import clsx from "clsx";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { FacebookIcon, InstagramIcon } from "@/components/icons";
-import { title } from "@/components/primitives";
+// import { title } from "@/components/primitives";
 import UserSetting from "./user-setting";
 import Logo from "./logo";
 import NavBarDropDown from "./navbar-dropdown";
@@ -28,15 +28,15 @@ export const Navbar = () => {
             className="flex justify-start items-center gap-1"
             href="/dashboard"
           >
-            <Logo width={40} />
-            <p
+            <Logo width={60} />
+            {/* <p
               className={clsx(
-                title({ color: "yellow", size: "xsm" }),
+                title({ color: "yellow", size: "md" }),
                 "font-bold text-inherit"
               )}
             >
               EUC
-            </p>
+            </p> */}
           </NextLink>
         </NavbarBrand>
         <ul className="hidden md:flex gap-4 justify-start ml-2">
@@ -79,7 +79,7 @@ export const Navbar = () => {
           >
             <InstagramIcon className="text-default-500" />
           </Link>
-          <UserSetting />
+          <UserSetting name="" email="" />
         </NavbarItem>
       </NavbarContent>
       <NavbarContent className="md:hidden basis-1 pl-4" justify="end">

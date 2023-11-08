@@ -5,7 +5,12 @@ import UserCustom from "./user-custom";
 import { navItem, siteConfig } from "@/config/site";
 import { useRouter } from "next/navigation";
 
-export default function UserSetting() {
+type Props = {
+  name: string;
+  email: string;
+};
+
+export default function UserSetting(props: Props) {
   const router = useRouter();
 
   const onclick = (
@@ -19,7 +24,7 @@ export default function UserSetting() {
   return (
     <div className="flex items-center gap-4">
       <Dropdown>
-        <UserCustom name="Le Ho Phat Tai" description="lehophattai" />
+        <UserCustom name={props.name} description={props.email} />
         <DropdownMenu aria-label="Dynamic Actions" selectionMode="none">
           {siteConfig.navUserSettingItems.map((item, index) => {
             return (

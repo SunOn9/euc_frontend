@@ -5,10 +5,12 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Button,
 } from "@nextui-org/react";
 import NextLink from "next/link";
 
 import { useRouter } from "next/navigation";
+import { ChevronDown } from "./icons";
 
 type Props = {
   item: navItem;
@@ -28,16 +30,22 @@ export default function NavBarDropDown(props: Props) {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <NextLink href="" className="flex items-center">
+        <Button
+          disableRipple
+          className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+          endContent={<ChevronDown fill="currentColor" size={16} />}
+          radius="sm"
+          variant="light"
+        >
           {props.item.label}
-        </NextLink>
+        </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions" selectionMode="none">
         {props.item.children ? (
           props.item.children.map((item, index) => {
             return (
               <DropdownItem key={index} onClick={(e) => onclick(e, item)}>
-                {item.label}
+                <NextLink href={item.href}>{item.label}</NextLink>
               </DropdownItem>
             );
           })

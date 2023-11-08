@@ -11,8 +11,11 @@ import Link from "next/link";
 import { useState } from "react";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   //schema valie
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required("Required").email("Invalid email"),
@@ -22,28 +25,60 @@ export default function LoginForm() {
   //show password button
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
+  //loading
   const [isLoading, setIsLoading] = useState(false);
 
   //handle login
   const handleLogin = async (value: LoginRequest) => {
-    await login({ ...value, data: {} }).then((res) => {
-      const sessionId = res.extraData?.sessionId;
-      if (sessionId !== undefined) {
-        Cookies.set("euc.sessionid", sessionId);
-      }
+    setIsLoading(true);
 
-      toast.success(`Success`, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
+    await login({ ...value, data: {} })
+      .then((res) => {
+        setIsLoading(false);
+
+        if (res.statusCode !== 200) {
+          toast.error("Wow so easy!", {
+            position: "bottom-left",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            theme: "colored",
+            style: {
+              borderRadius: "1rem",
+            },
+          });
+          return;
+        } else {
+          const sessionId = res.extraData?.sessionId;
+
+          if (sessionId !== undefined) {
+            Cookies.set("euc.sessionid", sessionId);
+          }
+
+          router.push("/dashboard");
+        }
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        toast.error(`${err.response?.data?.message}`, {
+          position: "bottom-left",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false,
+          progress: undefined,
+          theme: "colored",
+          style: {
+            borderRadius: "1rem",
+          },
+        });
+
+        return;
       });
-    });
-    setIsLoading(false);
   };
 
   return (
@@ -59,9 +94,8 @@ export default function LoginForm() {
       <Formik
         initialValues={LoginRequest.create()}
         validationSchema={LoginSchema}
-        onSubmit={async (values) => {
-          setIsLoading(true);
-          await handleLogin(values);
+        onSubmit={(values) => {
+          handleLogin(values);
         }}
       >
         {({

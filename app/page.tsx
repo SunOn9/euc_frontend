@@ -1,15 +1,10 @@
 "use client";
 import { title, subtitle } from "@/components/primitives";
-import { checkAuth } from "@/service/api/auth/check";
 import { Button } from "@nextui-org/react";
-// import { useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
-  const handleCheckAuth = () => {
-    checkAuth().then((res) => {
-      return;
-    });
-  };
+  // const handleCheckAuth = () => {};
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -18,9 +13,8 @@ export default function Home() {
         <h1 className={title()}>Ultimate Club&nbsp;</h1>
         <h2 className={subtitle({ class: "mt-4" })}></h2>
       </div>
-      <Button type="submit" onClick={handleCheckAuth}>
-        Submit
-      </Button>
+
+      <Button type="submit"></Button>
     </section>
   );
 }

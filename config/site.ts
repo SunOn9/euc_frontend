@@ -4,7 +4,7 @@ export type navItem = {
   key: string;
   label: string;
   href: string;
-  children?: Omit<navItem, 'children'>[]
+  children?: Omit<navItem, "children">[];
 };
 
 export const siteConfig = {
@@ -20,11 +20,52 @@ export const siteConfig = {
       key: "user",
       label: "User",
       href: "/dashboard/user",
-      children: [{
-        key: "create-user",
-        label: "Create User",
-        href: "/dashboard/user/create",
-      }]
+      children: [
+        {
+          key: "manager-user",
+          label: "Manager User",
+          href: "/dashboard/user",
+        },
+        {
+          key: "create-user",
+          label: "Create User",
+          href: "/dashboard/user/create",
+        },
+      ],
+    },
+    {
+      key: "member & guest",
+      label: "Member & Guest",
+      href: "/dashboard/member",
+      children: [
+        {
+          key: "manager-member",
+          label: "Manager Member",
+          href: "/dashboard/member",
+        },
+        {
+          key: "create-member",
+          label: "Create Member",
+          href: "/dashboard/member/create",
+        },
+      ],
+    },
+    {
+      key: "club",
+      label: "Club",
+      href: "/dashboard/member",
+      children: [
+        {
+          key: "manager-member",
+          label: "Manager Member",
+          href: "/dashboard/member",
+        },
+        {
+          key: "create-member",
+          label: "Create Member",
+          href: "/dashboard/member/create",
+        },
+      ],
     },
   ] as navItem[],
   navUserSettingItems: [
@@ -36,12 +77,12 @@ export const siteConfig = {
     {
       key: "change-password",
       label: "Change password",
-      href: "/2",
+      href: "/dashboard/user/change-password",
     },
     {
       key: "logout",
       label: "Logout",
-      href: "/3",
+      href: "/dashboard/logout",
     },
   ] as navItem[],
   links: {

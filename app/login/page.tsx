@@ -1,14 +1,16 @@
 import { title } from "@/components/primitives";
 import LoginForm from "./_component/login-form";
+import { ToastContainer } from "react-toastify";
 
 export default function Login() {
   return (
-    <section className="h-full		 flex flex-col items-center content-evenly	 justify-center gap-4 py-8 md:py-10">
+    <section className="h-full flex flex-col items-center content-evenly	 justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-lg text-center justify-center">
         <h1 className={title({ color: "yellow" })}>Entixie&nbsp;</h1>
         <h1 className={title()}>Ultimate&nbsp;</h1>
       </div>
       <LoginForm />
+      <ToastContainer />
     </section>
   );
 }
