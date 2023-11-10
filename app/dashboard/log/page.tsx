@@ -1,0 +1,9 @@
+import LogTable from "./_component/table/table-log-list";
+
+export default function Log() {
+  return (
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <LogTable />
+    </section>
+  );
+}

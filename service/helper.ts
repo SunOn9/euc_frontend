@@ -17,11 +17,16 @@ export function convertEnumRoleToVietnamese(role: EnumProto_UserRole): string {
     case EnumProto_UserRole.STAFF: {
       return "Nhân sự";
     }
-    case EnumProto_UserRole.UNRECOGNIZED: {
-      return "Khác";
-    }
     default: {
       return "";
     }
   }
+}
+
+export function convertToVietNamDate(date: Date): string {
+  return new Date(date).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableHeader,
@@ -8,27 +8,22 @@ import {
   TableRow,
   TableCell,
   Chip,
-  Pagination,
 } from "@nextui-org/react";
-import useSearchUser from "../hook/useSearchUser";
-import {
-  DataType,
-  columns,
-  intoTable,
-  statusColorMapIsDeleted,
-  statusColorMapRole,
-} from "./type";
+import useSearchLog from "../hook/useSearchLog";
+import { DataType, columns, intoTable, statusColorMapRole } from "./type";
 import ActionsComponent from "@/components/actions";
+import { Pagination } from "antd";
 
-export default function UserTable() {
-  const [page, setPage] = React.useState(1);
+export default function LogTable() {
+  const { logList, total, setLogSearchParam } = useSearchLog();
+  const [page, setPage] = useState(1);
 
-  const { userList, totalPage, setUserSearchParam } = useSearchUser();
+  console.log(page);
+  // const pages = Math.ceil(total / 20);
 
   const renderCell = React.useCallback(
-    (user: DataType, columnKey: React.Key) => {
-      const cellValue = user[columnKey as keyof DataType];
-
+    (log: DataType, columnKey: React.Key) => {
+      const cellValue = log[columnKey as keyof DataType];
       switch (columnKey) {
         case "stt":
           return (page - 1) * 20 + Number(cellValue);
@@ -36,20 +31,9 @@ export default function UserTable() {
           return (
             <Chip
               className="capitalize"
-              color={statusColorMapRole[user.role]}
+              color={statusColorMapRole[log.userRole]}
               size="sm"
               variant="flat"
-            >
-              {cellValue}
-            </Chip>
-          );
-        case "isDeleted":
-          return (
-            <Chip
-              className="capitalize border-none gap-1 text-default-600"
-              color={statusColorMapIsDeleted[user.isDeleted]}
-              size="sm"
-              variant="dot"
             >
               {cellValue}
             </Chip>
@@ -65,17 +49,21 @@ export default function UserTable() {
 
   return (
     <Table
-      aria-label="User Table"
+      aria-label="Log Table"
       bottomContent={
         <div className="flex w-full justify-center">
           <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="primary"
-            page={page}
-            total={totalPage / 20}
-            onChange={(page) => setPage(page)}
+            showSizeChanger={false}
+            defaultCurrent={page}
+            total={total}
+            pageSize={20}
+            onChange={(page) => {
+              setPage(page);
+              setLogSearchParam({
+                isExtraUser: true,
+                page: page,
+              });
+            }}
           />
         </div>
       }
@@ -83,7 +71,7 @@ export default function UserTable() {
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.uid}>{column.name}</TableColumn>}
       </TableHeader>
-      <TableBody items={intoTable(userList)}>
+      <TableBody items={intoTable(logList)}>
         {(item) => (
           <TableRow key={item.stt} className="py-5">
             {(columnKey) => (

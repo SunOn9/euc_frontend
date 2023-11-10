@@ -9,9 +9,9 @@ import { GetUserConditionRequest } from "@/generated/user/user.request";
 export default function useSearchUser() {
   const [userSearchParam, setUserSearchParam] =
     useState<GetUserConditionRequest>({
+      isDeleted: true,
       isExtraClub: true,
       page: 1,
-      limit: 20,
     });
 
   const queryFn = useCallback(
@@ -33,7 +33,7 @@ export default function useSearchUser() {
   }, [data?.payload?.userList]);
 
   const totalPage = useMemo(() => {
-    return data?.payload?.total;
+    return data?.payload?.total ?? 1;
   }, [data?.payload?.total]);
 
   return {
