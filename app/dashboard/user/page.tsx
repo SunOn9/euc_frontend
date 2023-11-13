@@ -1,4 +1,4 @@
-import UserTable from "./_component/table/table-user-list";
+import UserTable from "./_component/table";
 
 export default function User() {
   return (
