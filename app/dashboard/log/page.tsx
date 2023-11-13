@@ -1,4 +1,4 @@
-import LogTable from "./_component/table/table-log-list";
+import LogTable from "./_component/table";
 
 export default function Log() {
   return (

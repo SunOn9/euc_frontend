@@ -2,17 +2,6 @@ import { User } from "@/generated/user/user";
 import { convertEnumRoleToVietnamese } from "@/service/helper";
 import { ChipProps } from "@nextui-org/react";
 
-export const columns = [
-  { name: "STT", uid: "stt" },
-  { name: "Tên", uid: "name" },
-  { name: "Vai trò", uid: "role" },
-  { name: "Email", uid: "email" },
-  { name: "SĐT", uid: "phone" },
-  { name: "Câu lạc bộ", uid: "clubName" },
-  { name: "Tình trạng", uid: "isDeleted" },
-  { name: "Hành động", uid: "actions" },
-];
-
 export const statusColorMapIsDeleted: Record<string, ChipProps["color"]> = {
   "Hoạt động": "success",
   "Vô hiệu hoá": "danger",
@@ -37,15 +26,18 @@ export type DataType = {
   clubName: string;
 };
 
-export function intoTable(userList: User[]) {
+export function intoTable(userList: User[], page: number) {
   return userList.map((user, index) => {
     return {
-      stt: index + 1,
+      stt: (page - 1) * 20 + index + 1,
       name: user.name,
       role: convertEnumRoleToVietnamese(user.role),
       email: user.email,
       phone: user.phone,
-      clubName: `${user.club?.name}` + ``,
+      clubName:
+        `${user.club?.name}` + user.club?.abbreviation
+          ? `(${user.club?.abbreviation})`
+          : "",
       isDeleted: user.deletedAt ? "Vô hiệu hoá" : "Hoạt động",
     } as DataType;
   });

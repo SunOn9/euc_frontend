@@ -32,7 +32,7 @@ export default function useSearchUser() {
     return data?.payload?.userList;
   }, [data?.payload?.userList]);
 
-  const totalPage = useMemo(() => {
+  const total = useMemo(() => {
     return data?.payload?.total ?? 1;
   }, [data?.payload?.total]);
 
@@ -40,6 +40,6 @@ export default function useSearchUser() {
     requestQuery,
     userList,
     setUserSearchParam,
-    totalPage,
+    total,
   };
 }

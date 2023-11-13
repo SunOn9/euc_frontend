@@ -6,18 +6,6 @@ import {
 } from "@/service/helper";
 import { ChipProps } from "@nextui-org/react";
 
-export const columns = [
-  { name: "STT", uid: "stt" },
-  { name: "Hành động", uid: "action" },
-  { name: "Đối tượng", uid: "subject" },
-  { name: "Tên người dùng", uid: "userName" },
-  { name: "Vai trò người dùng", uid: "userRole" },
-  { name: "Session Id", uid: "sessionId" },
-  { name: "Thời gian", uid: "createdAt" },
-  { name: "Dữ liệu cũ", uid: "oldData" },
-  { name: "Dữ liệu mới", uid: "newData" },
-];
-
 export const statusColorMapRole: Record<string, ChipProps["color"]> = {
   "Quản trị viên": "warning",
   Leader: "danger",
@@ -39,10 +27,10 @@ export type DataType = {
   newData: string;
 };
 
-export function intoTable(logList: Log[]) {
+export function intoTable(logList: Log[], page: number) {
   return logList.map((log, index) => {
     return {
-      stt: index + 1,
+      stt: (page - 1) * 20 + index + 1,
       action: log.action,
       subject: log.subject,
       userName: log.user?.name ?? "",
@@ -51,8 +39,8 @@ export function intoTable(logList: Log[]) {
       ),
       sessionId: log.sessionId,
       createdAt: log.createdAt ? convertToVietNamDate(log.createdAt) : "",
-      oldData: JSON.stringify(log.oldData),
-      newData: JSON.stringify(log.newData),
+      oldData: JSON.stringify(log.oldData, null, 2),
+      newData: JSON.stringify(log.newData, null, 2),
     } as DataType;
   });
 }
