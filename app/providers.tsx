@@ -28,7 +28,9 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   return (
     <QueryClientProvider client={client}>
       <NextUIProvider>
-        <ConfigProvider>
+        <ConfigProvider theme={{
+      algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+    }}>>
           <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
           <ToastContainer />
         </ConfigProvider>
