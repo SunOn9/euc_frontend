@@ -2,7 +2,12 @@
 import React, { useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
-import { DataType, intoTable, statusColorMapRole } from "./type";
+import {
+  DataType,
+  intoTable,
+  statusColorMapIsDeleted,
+  statusColorMapRole,
+} from "./type";
 import { Chip } from "@nextui-org/react";
 import useSearchUser from "../hook/useSearchUser";
 
@@ -16,23 +21,13 @@ const columns: TableProps<DataType>["columns"] = [
     },
   },
   {
-    title: "Hành động",
-    dataIndex: "action",
+    title: "Họ và Tên",
+    dataIndex: "name",
     width: 120,
   },
   {
-    title: "Đối tượng",
-    dataIndex: "subject",
-    width: 120,
-  },
-  {
-    title: "Tên người dùng",
-    dataIndex: "userName",
-    width: 120,
-  },
-  {
-    title: "Phân quyền người dùng",
-    dataIndex: "userRole",
+    title: "Phân quyền",
+    dataIndex: "role",
     width: 120,
     render: (value) => {
       return (
@@ -47,32 +42,37 @@ const columns: TableProps<DataType>["columns"] = [
       );
     },
   },
-
   {
-    title: "Session Id",
-    dataIndex: "sessionId",
+    title: "Email",
+    dataIndex: "email",
     width: 120,
   },
   {
-    title: "Ngày tạo",
-    dataIndex: "createdAt",
+    title: "SĐT",
+    dataIndex: "phone",
     width: 120,
   },
   {
-    title: "Dữ liệu cũ",
-    dataIndex: "oldData",
+    title: "Hoạt độnng",
+    dataIndex: "isDeleted",
     width: 120,
-    // render: (value) => {
-    //   return <Snippet>{value}</Snippet>;
-    // },
+    render: (value) => {
+      return (
+        <Chip
+          className="capitalize"
+          color={statusColorMapIsDeleted[value]}
+          size="sm"
+          variant="dot"
+        >
+          {value}
+        </Chip>
+      );
+    },
   },
   {
-    title: "Dữ liệu mới",
-    dataIndex: "newData",
+    title: "CLB",
+    dataIndex: "clubName",
     width: 120,
-    // render: (value) => {
-    //   return <Snippet>{value}</Snippet>;
-    // },
   },
 ];
 

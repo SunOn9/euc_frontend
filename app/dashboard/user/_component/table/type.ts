@@ -35,9 +35,11 @@ export function intoTable(userList: User[], page: number) {
       email: user.email,
       phone: user.phone,
       clubName:
-        `${user.club?.name}` + user.club?.abbreviation
-          ? `(${user.club?.abbreviation})`
-          : "",
+        (user.club?.name ?? "") +
+        (user.club?.abbreviation
+          ? `
+     (${user.club?.abbreviation})`
+          : ""),
       isDeleted: user.deletedAt ? "Vô hiệu hoá" : "Hoạt động",
     } as DataType;
   });

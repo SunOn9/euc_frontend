@@ -20,52 +20,41 @@ export const siteConfig = {
       key: "user",
       label: "User",
       href: "/dashboard/user",
-      children: [
-        {
-          key: "manager-user",
-          label: "Manager User",
-          href: "/dashboard/user",
-        },
-        {
-          key: "create-user",
-          label: "Create User",
-          href: "/dashboard/user/create",
-        },
-      ],
     },
     {
-      key: "member & guest",
-      label: "Member & Guest",
+      key: "member",
+      label: "Member",
       href: "/dashboard/member",
-      children: [
-        {
-          key: "manager-member",
-          label: "Manager Member",
-          href: "/dashboard/member",
-        },
-        {
-          key: "create-member",
-          label: "Create Member",
-          href: "/dashboard/member/create",
-        },
-      ],
+    },
+    {
+      key: "guest",
+      label: "Guest",
+      href: "/dashboard/guest",
     },
     {
       key: "club",
       label: "Club",
-      href: "/dashboard/member",
-      children: [
-        {
-          key: "manager-member",
-          label: "Manager Member",
-          href: "/dashboard/member",
-        },
-        {
-          key: "create-member",
-          label: "Create Member",
-          href: "/dashboard/member/create",
-        },
-      ],
+      href: "/dashboard/club",
+    },
+    {
+      key: "area",
+      label: "Area",
+      href: "/dashboard/area",
+    },
+    {
+      key: "payment",
+      label: "Payment",
+      href: "/dashboard/payment",
+    },
+    {
+      key: "receipt",
+      label: "Receipt",
+      href: "/dashboard/receipt",
+    },
+    {
+      key: "event",
+      label: "Event",
+      href: "/dashboard/event",
     },
   ] as navItem[],
   navUserSettingItems: [

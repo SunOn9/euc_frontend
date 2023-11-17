@@ -25,6 +25,8 @@ import { useEffect, useState } from "react";
 export const Navbar = () => {
   const [userInfo, setUserInfo] = useState(User.create());
 
+  const mergeNav = siteConfig.navItems.concat(siteConfig.navUserSettingItems);
+
   useEffect(() => {
     const item: User = JSON.parse(localStorage.getItem("user-info") ?? "");
     if (item) {
@@ -33,7 +35,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar maxWidth="2xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink
@@ -100,9 +102,13 @@ export const Navbar = () => {
       </NavbarContent>
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navItems.map((item, index) => (
+          {mergeNav.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <NextLink color="foreground" href={item.href}>
+              <NextLink
+                color={item.key === "logout" ? "danger" : "foreground"}
+                className={item.key === "logout" ? "text-danger" : ""}
+                href={item.href}
+              >
                 {item.label}
               </NextLink>
             </NavbarMenuItem>

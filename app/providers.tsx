@@ -7,8 +7,7 @@ import dynamic from "next/dynamic";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConfigProvider } from "antd";
-import theme from "@/config/theme/themeConfig";
+import { ConfigProvider, theme } from "antd";
 
 const NextUIProvider = dynamic(
   () => import("@nextui-org/system").then((module) => module.NextUIProvider),
@@ -24,11 +23,12 @@ export interface ProvidersProps {
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const [client] = useState(new QueryClient());
+  const { defaultAlgorithm, darkAlgorithm } = theme;
 
   return (
     <QueryClientProvider client={client}>
       <NextUIProvider>
-        <ConfigProvider theme={theme}>
+        <ConfigProvider>
           <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
           <ToastContainer />
         </ConfigProvider>
