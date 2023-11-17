@@ -1,12 +1,12 @@
 import { getHttpClient } from "@/config/httpClientsHelper";
-import { ClubReply } from "@/generated/club/club.reply";
-import { RemoveClubRequest } from "@/generated/club/club.request";
+import { RemoveClubFeeRequest } from "@/generated/clubFee/clubFee.request";
+import { SimpleReply } from "@/generated/common";
 
-const API_URL = "/club/remove";
+const API_URL = "/clubFee/remove";
 
 export async function clubRemove(
-  request: RemoveClubRequest
-): Promise<ClubReply> {
+  request: RemoveClubFeeRequest
+): Promise<SimpleReply> {
   const httpClient = await getHttpClient();
   const resp = await httpClient.get(API_URL, { params: request });
   return resp.data;
