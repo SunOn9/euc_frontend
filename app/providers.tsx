@@ -1,13 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import dynamic from "next/dynamic";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConfigProvider, theme } from "antd";
+import { ConfigProvider } from "antd";
+import lightTheme from "@/config/theme/lightThemeConfig";
+import darkTheme from "@/config/theme/darkThemeConfig";
 
 const NextUIProvider = dynamic(
   () => import("@nextui-org/system").then((module) => module.NextUIProvider),
@@ -23,14 +25,15 @@ export interface ProvidersProps {
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const [client] = useState(new QueryClient());
-  const { defaultAlgorithm, darkAlgorithm } = theme;
+
+  const { theme, setTheme } = useTheme();
+
+  const antDesignTheme = theme === "light" ? lightTheme : darkTheme;
 
   return (
     <QueryClientProvider client={client}>
       <NextUIProvider>
-        <ConfigProvider theme={{
-      algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
-    }}>>
+        <ConfigProvider theme={antDesignTheme}>
           <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
           <ToastContainer />
         </ConfigProvider>
