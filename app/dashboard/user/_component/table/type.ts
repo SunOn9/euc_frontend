@@ -1,6 +1,7 @@
 import { User } from "@/generated/user/user";
 import { convertEnumRoleToVietnamese } from "@/service/helper";
 import { ChipProps } from "@nextui-org/react";
+import { ReactNode } from "react";
 
 export const statusColorMapIsDeleted: Record<string, ChipProps["color"]> = {
   "Hoạt động": "success",
@@ -24,6 +25,7 @@ export type DataType = {
   phone: string;
   isDeleted: string;
   clubName: string;
+  action: number;
 };
 
 export function intoTable(userList: User[], page: number) {
@@ -41,6 +43,7 @@ export function intoTable(userList: User[], page: number) {
      (${user.club?.abbreviation})`
           : ""),
       isDeleted: user.deletedAt ? "Vô hiệu hoá" : "Hoạt động",
+      action: user.id,
     } as DataType;
   });
 }

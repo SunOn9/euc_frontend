@@ -1,12 +1,9 @@
-import type { ThemeConfig } from "antd";
+import { ThemeConfig, theme } from "antd";
 
 const darkTheme: ThemeConfig = {
-  components: {
-    Pagination: {},
-  },
+  algorithm: theme.darkAlgorithm,
   token: {
-    fontSize: 16,
-    colorPrimary: "#FFB457",
+    colorPrimary: "#FF705B",
   },
 };
 

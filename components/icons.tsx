@@ -1,6 +1,47 @@
 import * as React from "react";
 import { IconSvgProps } from "@/types";
 
+export const AddIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      fill="none"
+      height={size || height || 24}
+      viewBox="0 0 24 24"
+      width={size || width || 24}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g
+        id="SVGRepo_tracerCarrier"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></g>
+      <g id="SVGRepo_iconCarrier">
+        {" "}
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="1.5"
+        ></circle>{" "}
+        <path
+          d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        ></path>{" "}
+      </g>
+    </svg>
+  );
+};
+
 export const EyeIcon: React.FC<IconSvgProps> = ({
   size = 24,
   width,
