@@ -89,8 +89,8 @@ export default function LoginForm() {
       className="p-3 min-w-[35%] bg-background/60 dark:bg-default-100/50"
     >
       <CardHeader className="pb-4 pt-2 px-4 flex-col items-start">
-        <h4 className="font-bold text-large">Login to EUC</h4>
-        <small className="text-default-500">Welcome to EUC</small>
+        <h4 className="font-bold text-large">Đăng nhập vào EUC</h4>
+        <small className="text-default-500">Chào mừng đến với EUC</small>
       </CardHeader>
       <Formik
         initialValues={LoginRequest.create()}
@@ -115,7 +115,7 @@ export default function LoginForm() {
                 type="email"
                 label="Email"
                 name="username"
-                placeholder="Enter your email"
+                placeholder="Nhập email"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.username}
@@ -125,9 +125,9 @@ export default function LoginForm() {
               />
               <Input
                 className="pb-2 "
-                label="Password"
+                label="Mật khẩu"
                 name="password"
-                placeholder="Enter your password "
+                placeholder="Nhập mật khẩu"
                 endContent={
                   <button
                     className="focus:outline-none	ml-2"
@@ -149,16 +149,16 @@ export default function LoginForm() {
                   errors.password && touched.password ? errors.password : " "
                 }
               />
-              <div className="place-self-end pb-2">
+              {/* <div className="place-self-end pb-2">
                 <Link
                   href={"/"}
                   className={text({
                     color: "cyan",
                   })}
                 >
-                  Forgot your password?
+                  Quên mật khẩu?
                 </Link>
-              </div>
+              </div> */}
               <Button
                 radius="full"
                 className={clsx(
@@ -167,7 +167,7 @@ export default function LoginForm() {
                 type="submit"
                 isLoading={isLoading}
               >
-                Submit
+                Xác nhận
               </Button>
             </form>
           </CardBody>

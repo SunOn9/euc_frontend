@@ -1,8 +1,8 @@
 import { getHttpClient } from "@/config/httpClientsHelper";
-import { ClubFeeReply } from "@/generated/clubFee/clubFee.reply";
-import { GetClubFeeConditionRequest } from "@/generated/clubFee/clubFee.request";
+import { ClubFeeReply } from "@/generated/club-fee/club-fee.reply";
+import { GetClubFeeConditionRequest } from "@/generated/club-fee/club-fee.request";
 
-const API_URL = "/clubFee/detail";
+const API_URL = "/club-fee/detail";
 
 export async function clubDetail(
   request: GetClubFeeConditionRequest

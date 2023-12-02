@@ -17,21 +17,24 @@ module.exports = {
       xl: "1.25rem",
     },
     extend: {},
-    
   },
   darkMode: "class",
-  plugins: [nextui({
-    themes: {
-      light: {
-        colors: {
-          background: "#F4F4F5"
-        }
+  plugins: [
+    nextui({
+      themes: {
+        light: {
+          colors: {
+            primary: "#FFB457",
+            background: "#F4F4F5",
+          },
+        },
+        dark: {
+          colors: {
+            primary: "#FF705B",
+            background: "#18181B",
+          },
+        },
       },
-      dark: {
-        colors: {
-          background: "#18181B"
-        }
-      }
-    }
-  })],
+    }),
+  ],
 };

@@ -18,31 +18,30 @@ import {
   ModalHeader,
   Tooltip,
 } from "@nextui-org/react";
-import useSearchUser from "../hook/useSearchUser";
+import useSearchUser from "../../../../../components/hooks/useSearchUser";
 import { EyeIcon, EditIcon, DeleteIcon, AddIcon } from "@/components/icons";
 import { title } from "@/components/primitives";
 import { userRemove } from "@/service/api/user/remove";
 import { useQueryClient } from "@tanstack/react-query";
 import { ToastType, customToast } from "@/components/hooks/useToast";
-import { userDetail } from "@/service/api/user/detail";
+import UserForm from "../form-create-user/create-user-form";
 
 export default function UserTable() {
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "STT",
       dataIndex: "stt",
-      width: 15,
-      fixed: "left",
+      width: 10,
     },
     {
       title: "Họ và Tên",
       dataIndex: "name",
-      width: 40,
+      width: 30,
     },
     {
       title: "Phân quyền",
       dataIndex: "role",
-      width: 40,
+      width: 20,
       render: (value) => {
         return (
           <Chip
@@ -59,17 +58,17 @@ export default function UserTable() {
     {
       title: "Email",
       dataIndex: "email",
-      width: 50,
+      width: 30,
     },
     {
       title: "SĐT",
       dataIndex: "phone",
-      width: 40,
+      width: 20,
     },
     {
-      title: "Hoạt độnng",
+      title: "Trạng thái",
       dataIndex: "isDeleted",
-      width: 45,
+      width: 20,
       render: (value) => {
         return (
           <Chip
@@ -86,17 +85,17 @@ export default function UserTable() {
     {
       title: "CLB",
       dataIndex: "clubName",
-      width: 50,
+      width: 30,
     },
     {
       title: "Hành động",
       dataIndex: "action",
-      width: 35,
+      width: 20,
       fixed: "right",
       render: (value) => {
         return (
           <div className="relative flex items-center">
-            <Tooltip content="Details">
+            <Tooltip content="Chi tiết">
               <Button
                 className="text-md text-default-400 cursor-pointer active:opacity-50"
                 variant="light"
@@ -104,22 +103,21 @@ export default function UserTable() {
                 disableRipple
                 disableAnimation
                 startContent={<EyeIcon />}
-                onPress={() => {
-                  console.log(value);
-                }}
+                onPress={() => handleOpenUserModal(2)}
               />
             </Tooltip>
-            <Tooltip content="Edit user">
+            <Tooltip content="Sửa">
               <Button
                 className="text-md text-default-400 cursor-pointer active:opacity-50"
                 variant="light"
                 isIconOnly
                 disableRipple
                 disableAnimation
+                onPress={() => handleOpenUserModal(3)}
                 startContent={<EditIcon />}
               />
             </Tooltip>
-            <Tooltip color="danger" content="Delete user">
+            <Tooltip color="danger" content="Xoá">
               <Button
                 className="text-md text-danger cursor-pointer active:opacity-50"
                 variant="light"
@@ -146,18 +144,31 @@ export default function UserTable() {
     setId(0);
   };
 
+  const handleOpenUserModal = (type: number) => {
+    setOpenUser(true);
+    setTypeModal(type);
+  };
+
+  const handleCloseUserModal = () => {
+    setOpenUser(false);
+    setTypeModal(0);
+  };
+
   const onRemove = () => {
-    userDetail({ id: id })
+    userRemove({ id: id })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Xóa lô thất bại", ToastType.ERROR);
+          customToast("Xóa người dùng thất bại", ToastType.ERROR);
+          handleClose();
           return;
         }
-        customToast(`Xóa lô Id: ${id} thành công`, ToastType.SUCCESS);
+        customToast(`Xóa người dùng Id: ${id} thành công`, ToastType.SUCCESS);
         queryClient.invalidateQueries(["userSearch"]);
+        handleClose();
       })
       .catch(() => {
         customToast("Có lỗi xảy ra", ToastType.ERROR);
+        handleClose();
         return;
       });
   };
@@ -165,34 +176,35 @@ export default function UserTable() {
   const { userList, total, setUserSearchParam } = useSearchUser();
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
+  const [openUser, setOpenUser] = useState(false);
+  const [typeModal, setTypeModal] = useState(0);
   const queryClient = useQueryClient();
   const [id, setId] = useState(0);
 
   return (
     <div>
-      <div className="flex max-w-lg py-4">
-        <h1 className={title({ size: "md" })}>Quản lý người dùng&nbsp;</h1>
-        <Tooltip content="Create">
+      <div className="flex items-center	 max-w-lg py-4">
+        <h1 className={title({ size: "sm" })}>Quản lý người dùng&nbsp;</h1>
+        <Tooltip content="Tạo">
           <Button
-            className="text-md cursor-pointer active:opacity-50"
+            className="text-sm cursor-pointer active:opacity-50"
             variant="light"
             isIconOnly
             disableRipple
             disableAnimation
             startContent={<AddIcon />}
-            onPress={() => {
-              console.log(1);
-            }}
+            onPress={() => handleOpenUserModal(1)}
           />
         </Tooltip>
       </div>
       <Table
+        size="small"
         columns={columns}
         dataSource={intoTable(userList, page)}
         rowKey={(record) => record.action}
         pagination={{
           total: total,
-          defaultPageSize: 20,
+          defaultPageSize: 5,
           current: page,
           onChange: (page) => {
             setPage(page);
@@ -216,18 +228,58 @@ export default function UserTable() {
       >
         <ModalContent>
           <>
-            <ModalHeader className="flex flex-col">Delete</ModalHeader>
-            <ModalBody>This action will delete your data</ModalBody>
+            <ModalHeader className="flex flex-col">Xoá</ModalHeader>
+            <ModalBody>Xác nhận xoá dữ liệu này?</ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="flat" onPress={handleClose}>
-                Cancel
+              <Button
+                className="bold"
+                color="danger"
+                variant="flat"
+                onPress={handleClose}
+              >
+                Huỷ
               </Button>
-              <Button color="primary" onPress={onRemove}>
-                Accept
+              <Button className="bold" color="primary" onPress={onRemove}>
+                Xoá
               </Button>
             </ModalFooter>
           </>
-          )
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={openUser} onClose={handleCloseUserModal} size="2xl">
+        <ModalContent>
+          <ModalHeader className="">
+            {(() => {
+              switch (typeModal) {
+                case 1:
+                  return <span>Tạo người dùng</span>;
+                case 2:
+                  return <span>Chi tiết người dùng</span>;
+                case 3:
+                  return <span>Chỉnh sửa người dùng</span>;
+                default:
+                  return null;
+              }
+            })()}
+          </ModalHeader>
+          <ModalBody>
+            {(() => {
+              switch (typeModal) {
+                case 1:
+                  return (
+                    <>
+                      <UserForm onClose={handleCloseUserModal} />
+                    </>
+                  );
+                case 2:
+                  return <span>Chi tiết người dùng</span>;
+                case 3:
+                  return <span>Chỉnh sửa người dùng</span>;
+                default:
+                  return null;
+              }
+            })()}
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>

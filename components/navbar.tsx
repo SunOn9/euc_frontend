@@ -62,7 +62,8 @@ export const Navbar = () => {
                 key={item.key}
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "text-sm"
                 )}
                 color="foreground"
                 href={item.href}
