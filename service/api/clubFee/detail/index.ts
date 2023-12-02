@@ -8,6 +8,6 @@ export async function clubDetail(
   request: GetClubFeeConditionRequest
 ): Promise<ClubFeeReply> {
   const httpClient = await getHttpClient();
-  const resp = await httpClient.get(API_URL, { params: request });
+  const resp = await httpClient.get(API_URL + `/${request.id}`);
   return resp.data;
 }

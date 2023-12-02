@@ -16,11 +16,11 @@ export const AddIcon: React.FC<IconSvgProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
       <g
         id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       ></g>
       <g id="SVGRepo_iconCarrier">
         {" "}
@@ -29,13 +29,13 @@ export const AddIcon: React.FC<IconSvgProps> = ({
           cy="12"
           r="10"
           stroke="currentColor"
-          stroke-width="1.5"
+          strokeWidth="1.5"
         ></circle>{" "}
         <path
           d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
           stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
+          strokeWidth="1.5"
+          strokeLinecap="round"
         ></path>{" "}
       </g>
     </svg>
