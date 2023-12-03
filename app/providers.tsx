@@ -42,12 +42,12 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={client}>
-      <NextUIProvider>
-        <ConfigProvider theme={antTheme}>
+      <ConfigProvider theme={antTheme}>
+        <NextUIProvider>
           <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
           <ToastContainer />
-        </ConfigProvider>
-      </NextUIProvider>
+        </NextUIProvider>
+      </ConfigProvider>
     </QueryClientProvider>
   );
 }

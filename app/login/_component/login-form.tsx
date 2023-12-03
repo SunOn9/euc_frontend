@@ -1,18 +1,16 @@
 "use client";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons";
-import { text } from "@/components/primitives";
 import { LoginRequest } from "@/generated/auth/auth.request";
 import { login } from "@/service/api/auth/login";
 import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react";
 import clsx from "clsx";
 import { Formik } from "formik";
 import Cookies from "js-cookie";
-import Link from "next/link";
 import { useState } from "react";
 import * as Yup from "yup";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+import { ToastType, customToast } from "@/components/hooks/useToast";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -21,13 +19,11 @@ export default function LoginForm() {
     username: Yup.string().required("Required").email("Invalid email"),
     password: Yup.string().required("Required"),
   });
-
   //show password button
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
   //loading
   const [isLoading, setIsLoading] = useState(false);
-
   //handle login
   const handleLogin = async (value: LoginRequest) => {
     setIsLoading(true);
@@ -37,19 +33,6 @@ export default function LoginForm() {
         setIsLoading(false);
 
         if (res.statusCode !== 200) {
-          toast.error(`${res.message}`, {
-            position: "bottom-left",
-            autoClose: 2000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-            theme: "colored",
-            style: {
-              borderRadius: "1rem",
-            },
-          });
           return;
         } else {
           const sessionId = res.extraData?.sessionId;
@@ -64,20 +47,7 @@ export default function LoginForm() {
       })
       .catch((err) => {
         setIsLoading(false);
-        toast.error(`${err.response?.data?.message}`, {
-          position: "bottom-left",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false,
-          progress: undefined,
-          theme: "colored",
-          style: {
-            borderRadius: "1rem",
-          },
-        });
-
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         return;
       });
   };
@@ -109,12 +79,16 @@ export default function LoginForm() {
           /* and other goodies */
         }) => (
           <CardBody className="overflow-visible py-2">
-            <form className="flex flex-col" onSubmit={handleSubmit}>
+            <form
+              className="flex flex-col justify-center gap-4"
+              onSubmit={handleSubmit}
+            >
               <Input
-                className="pb-2"
+                className="pt-4"
                 type="email"
                 label="Email"
                 name="username"
+                labelPlacement="outside"
                 placeholder="Nhập email"
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -124,10 +98,11 @@ export default function LoginForm() {
                 }
               />
               <Input
-                className="pb-2 "
+                className="pt-4"
                 label="Mật khẩu"
                 name="password"
                 placeholder="Nhập mật khẩu"
+                labelPlacement="outside"
                 endContent={
                   <button
                     className="focus:outline-none	ml-2"
@@ -149,16 +124,7 @@ export default function LoginForm() {
                   errors.password && touched.password ? errors.password : " "
                 }
               />
-              {/* <div className="place-self-end pb-2">
-                <Link
-                  href={"/"}
-                  className={text({
-                    color: "cyan",
-                  })}
-                >
-                  Quên mật khẩu?
-                </Link>
-              </div> */}
+
               <Button
                 radius="full"
                 className={clsx(

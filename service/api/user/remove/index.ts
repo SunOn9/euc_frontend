@@ -8,6 +8,6 @@ export async function userRemove(
   request: RemoveUserRequest
 ): Promise<SimpleReply> {
   const httpClient = await getHttpClient();
-  const resp = await httpClient.get(API_URL + `/${request.id}`);
+  const resp = await httpClient.get(API_URL, { params: request });
   return resp.data;
 }

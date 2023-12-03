@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import {
+  ActionType,
   DataType,
   intoTable,
   statusColorMapIsDeleted,
@@ -19,12 +20,23 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import useSearchUser from "../../../../../components/hooks/useSearchUser";
-import { EyeIcon, EditIcon, DeleteIcon, AddIcon } from "@/components/icons";
+import {
+  EyeIcon,
+  EditIcon,
+  DeleteIcon,
+  AddIcon,
+  SearchIcon,
+} from "@/components/icons";
 import { title } from "@/components/primitives";
 import { userRemove } from "@/service/api/user/remove";
 import { useQueryClient } from "@tanstack/react-query";
 import { ToastType, customToast } from "@/components/hooks/useToast";
-import UserForm from "../form-create-user/create-user-form";
+import UserForm from "../form-create-user";
+import UserDetailForm from "../form-detail-user";
+import { User } from "@/generated/user/user";
+import { userDetail } from "@/service/api/user/detail";
+import { UserReply } from "@/generated/user/user.reply";
+import UserFilterForm from "../form-filter-user";
 
 export default function UserTable() {
   const columns: TableProps<DataType>["columns"] = [
@@ -92,44 +104,47 @@ export default function UserTable() {
       dataIndex: "action",
       width: 20,
       fixed: "right",
-      render: (value) => {
-        return (
-          <div className="relative flex items-center">
-            <Tooltip content="Chi tiết">
-              <Button
-                className="text-md text-default-400 cursor-pointer active:opacity-50"
-                variant="light"
-                isIconOnly
-                disableRipple
-                disableAnimation
-                startContent={<EyeIcon />}
-                onPress={() => handleOpenUserModal(2)}
-              />
-            </Tooltip>
-            <Tooltip content="Sửa">
-              <Button
-                className="text-md text-default-400 cursor-pointer active:opacity-50"
-                variant="light"
-                isIconOnly
-                disableRipple
-                disableAnimation
-                onPress={() => handleOpenUserModal(3)}
-                startContent={<EditIcon />}
-              />
-            </Tooltip>
-            <Tooltip color="danger" content="Xoá">
-              <Button
-                className="text-md text-danger cursor-pointer active:opacity-50"
-                variant="light"
-                isIconOnly
-                disableRipple
-                disableAnimation
-                onPress={() => handleOpen(value)}
-                startContent={<DeleteIcon />}
-              />
-            </Tooltip>
-          </div>
-        );
+      render: (value: ActionType) => {
+        if (value.isDeleted) {
+          return null;
+        } else
+          return (
+            <div className="relative flex items-center">
+              <Tooltip content="Chi tiết">
+                <Button
+                  className="text-md text-default-400 cursor-pointer active:opacity-50"
+                  variant="light"
+                  isIconOnly
+                  disableRipple
+                  disableAnimation
+                  startContent={<EyeIcon />}
+                  onPress={() => handleOpenUserModal(2, value.id)}
+                />
+              </Tooltip>
+              <Tooltip content="Sửa">
+                <Button
+                  className="text-md text-default-400 cursor-pointer active:opacity-50"
+                  variant="light"
+                  isIconOnly
+                  disableRipple
+                  disableAnimation
+                  onPress={() => handleOpenUserModal(3, value.id)}
+                  startContent={<EditIcon />}
+                />
+              </Tooltip>
+              <Tooltip color="danger" content="Xoá">
+                <Button
+                  className="text-md text-danger cursor-pointer active:opacity-50"
+                  variant="light"
+                  isIconOnly
+                  disableRipple
+                  disableAnimation
+                  onPress={() => handleOpen(value.id)}
+                  startContent={<DeleteIcon />}
+                />
+              </Tooltip>
+            </div>
+          );
       },
     },
   ];
@@ -144,14 +159,40 @@ export default function UserTable() {
     setId(0);
   };
 
-  const handleOpenUserModal = (type: number) => {
-    setOpenUser(true);
+  const handleOpenUserModal = async (type: number, id?: number) => {
+    let data: void | UserReply | undefined;
+    if (id) {
+      data = await userDetail({
+        id: id,
+        isExtraClub: true,
+      })
+        .then((res) => {
+          if (res.statusCode !== 200) {
+            customToast("Có lỗi xảy ra", ToastType.ERROR);
+            return;
+          } else {
+            if (res.payload) {
+              setUser(res.payload);
+            }
+            return res;
+          }
+        })
+        .catch((err) => {
+          customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+          return;
+        });
+    }
+    if (data && data.payload) {
+      setUser(data.payload);
+    }
     setTypeModal(type);
+    setOpenUser(true);
   };
 
   const handleCloseUserModal = () => {
-    setOpenUser(false);
+    setId(0);
     setTypeModal(0);
+    setOpenUser(false);
   };
 
   const onRemove = () => {
@@ -180,6 +221,8 @@ export default function UserTable() {
   const [typeModal, setTypeModal] = useState(0);
   const queryClient = useQueryClient();
   const [id, setId] = useState(0);
+  const [user, setUser] = useState(User.create());
+  const [showFilter, setShowFilter] = useState<boolean>(true);
 
   return (
     <div>
@@ -196,12 +239,30 @@ export default function UserTable() {
             onPress={() => handleOpenUserModal(1)}
           />
         </Tooltip>
+        <Tooltip content="Bộ lọc">
+          <Button
+            className="text-sm cursor-pointer active:opacity-50"
+            variant="light"
+            isIconOnly
+            disableRipple
+            disableAnimation
+            startContent={<SearchIcon />}
+            onPress={() => {
+              setShowFilter(!showFilter);
+            }}
+          />
+        </Tooltip>
       </div>
+      <UserFilterForm
+        showFilter={showFilter}
+        setUserSearchParam={setUserSearchParam}
+      />
       <Table
         size="small"
+        className="pt-4"
         columns={columns}
         dataSource={intoTable(userList, page)}
-        rowKey={(record) => record.action}
+        rowKey={(record) => record.action.id}
         pagination={{
           total: total,
           defaultPageSize: 5,
@@ -225,6 +286,7 @@ export default function UserTable() {
         isOpen={open}
         onClose={handleClose}
         placement="top-center"
+        isDismissable={false}
       >
         <ModalContent>
           <>
@@ -246,7 +308,12 @@ export default function UserTable() {
           </>
         </ModalContent>
       </Modal>
-      <Modal isOpen={openUser} onClose={handleCloseUserModal} size="2xl">
+      <Modal
+        isOpen={openUser}
+        onClose={handleCloseUserModal}
+        size="2xl"
+        isDismissable={false}
+      >
         <ModalContent>
           <ModalHeader className="">
             {(() => {
@@ -272,9 +339,21 @@ export default function UserTable() {
                     </>
                   );
                 case 2:
-                  return <span>Chi tiết người dùng</span>;
+                  return (
+                    <UserDetailForm
+                      onClose={handleCloseUserModal}
+                      user={user}
+                      isDetail={true}
+                    />
+                  );
                 case 3:
-                  return <span>Chỉnh sửa người dùng</span>;
+                  return (
+                    <UserDetailForm
+                      onClose={handleCloseUserModal}
+                      user={user}
+                      isDetail={false}
+                    />
+                  );
                 default:
                   return null;
               }
