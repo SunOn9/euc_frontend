@@ -6,8 +6,8 @@ import {
   ActionType,
   DataType,
   intoTable,
-  statusColorMapIsDeleted,
-  statusColorMapRole,
+  statusColorMapStatus,
+  statusColorMapGender,
 } from "./type";
 import {
   Modal,
@@ -19,7 +19,7 @@ import {
   ModalHeader,
   Tooltip,
 } from "@nextui-org/react";
-import useSearchUser from "../../../../../components/hooks/useSearchUser";
+import useSearchMember from "../../../../../components/hooks/useSearchMember";
 import {
   EyeIcon,
   EditIcon,
@@ -28,17 +28,17 @@ import {
   SearchIcon,
 } from "@/components/icons";
 import { title } from "@/components/primitives";
-import { userRemove } from "@/service/api/user/remove";
+import { memberRemove } from "@/service/api/member/remove";
 import { useQueryClient } from "@tanstack/react-query";
 import { ToastType, customToast } from "@/components/hooks/useToast";
-import UserForm from "../form-create-user";
-import UserDetailForm from "../form-detail-user";
-import { User } from "@/generated/user/user";
-import { userDetail } from "@/service/api/user/detail";
-import { UserReply } from "@/generated/user/user.reply";
-import UserFilterForm from "../form-filter-user";
+import MemberForm from "../form-create-payment";
+import MemberDetailForm from "../form-detail-payment";
+import { Member } from "@/generated/member/member";
+import { memberDetail } from "@/service/api/member/detail";
+import { MemberReply } from "@/generated/member/member.reply";
+import MemberFilterForm from "../form-filter-payment";
 
-export default function UserTable() {
+export default function MemberTable() {
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "STT",
@@ -51,14 +51,24 @@ export default function UserTable() {
       width: 30,
     },
     {
-      title: "Phân quyền",
-      dataIndex: "role",
-      width: 20,
+      title: "Biệt danh",
+      dataIndex: "nickName",
+      width: 30,
+    },
+    {
+      title: "Sinh nhật",
+      dataIndex: "birthday",
+      width: 30,
+    },
+    {
+      title: "Tình trạng",
+      dataIndex: "status",
+      width: 30,
       render: (value) => {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMapRole[value]}
+            color={statusColorMapStatus[value]}
             size="sm"
             variant="flat"
           >
@@ -68,24 +78,32 @@ export default function UserTable() {
       },
     },
     {
-      title: "Email",
-      dataIndex: "email",
+      title: "Sinh viên",
+      dataIndex: "type",
+      width: 20,
+      render: (value) => {
+        return value === true ? "✔️" : "❌";
+      },
+    },
+    {
+      title: "Quê",
+      dataIndex: "hometown",
       width: 30,
     },
     {
-      title: "SĐT",
-      dataIndex: "phone",
+      title: "CLB",
+      dataIndex: "clubName",
       width: 20,
     },
     {
-      title: "Trạng thái",
-      dataIndex: "isDeleted",
+      title: "Giới tính",
+      dataIndex: "gender",
       width: 20,
       render: (value) => {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMapIsDeleted[value]}
+            color={statusColorMapGender[value]}
             size="sm"
             variant="dot"
           >
@@ -95,14 +113,9 @@ export default function UserTable() {
       },
     },
     {
-      title: "CLB",
-      dataIndex: "clubName",
-      width: 30,
-    },
-    {
       title: "Hành động",
       dataIndex: "action",
-      width: 20,
+      width: 30,
       fixed: "right",
       render: (value: ActionType) => {
         if (value.isDeleted) {
@@ -118,7 +131,7 @@ export default function UserTable() {
                   disableRipple
                   disableAnimation
                   startContent={<EyeIcon />}
-                  onPress={() => handleOpenUserModal(2, value.id)}
+                  onPress={() => handleOpenMemberModal(2, value.id)}
                 />
               </Tooltip>
               <Tooltip content="Sửa">
@@ -128,7 +141,7 @@ export default function UserTable() {
                   isIconOnly
                   disableRipple
                   disableAnimation
-                  onPress={() => handleOpenUserModal(3, value.id)}
+                  onPress={() => handleOpenMemberModal(3, value.id)}
                   startContent={<EditIcon />}
                 />
               </Tooltip>
@@ -159,12 +172,13 @@ export default function UserTable() {
     setId(0);
   };
 
-  const handleOpenUserModal = async (type: number, id?: number) => {
-    let data: void | UserReply | undefined;
+  const handleOpenMemberModal = async (type: number, id?: number) => {
+    let data: void | MemberReply | undefined;
     if (id) {
-      data = await userDetail({
+      data = await memberDetail({
         id: id,
         isExtraClub: true,
+        isExtraArea: true,
       })
         .then((res) => {
           if (res.statusCode !== 200) {
@@ -172,7 +186,7 @@ export default function UserTable() {
             return;
           } else {
             if (res.payload) {
-              setUser(res.payload);
+              setMember(res.payload);
             }
             return res;
           }
@@ -183,28 +197,28 @@ export default function UserTable() {
         });
     }
     if (data && data.payload) {
-      setUser(data.payload);
+      setMember(data.payload);
     }
     setTypeModal(type);
-    setOpenUser(true);
+    setOpenMember(true);
   };
 
-  const handleCloseUserModal = () => {
+  const handleCloseMemberModal = () => {
     setId(0);
     setTypeModal(0);
-    setOpenUser(false);
+    setOpenMember(false);
   };
 
   const onRemove = () => {
-    userRemove({ id: id })
+    memberRemove({ id: id })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Xóa người dùng thất bại", ToastType.ERROR);
+          customToast("Xóa thành viên thất bại", ToastType.ERROR);
           handleClose();
           return;
         }
-        customToast(`Xóa người dùng Id: ${id} thành công`, ToastType.SUCCESS);
-        queryClient.invalidateQueries(["userSearch"]);
+        customToast(`Xóa thành viên Id: ${id} thành công`, ToastType.SUCCESS);
+        queryClient.invalidateQueries(["memberSearch"]);
         handleClose();
       })
       .catch(() => {
@@ -214,20 +228,20 @@ export default function UserTable() {
       });
   };
 
-  const { userList, total, setUserSearchParam } = useSearchUser();
+  const { memberList, total, setMemberSearchParam } = useSearchMember();
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
-  const [openUser, setOpenUser] = useState(false);
+  const [openMember, setOpenMember] = useState(false);
   const [typeModal, setTypeModal] = useState(0);
   const queryClient = useQueryClient();
   const [id, setId] = useState(0);
-  const [user, setUser] = useState(User.create());
+  const [member, setMember] = useState(Member.create());
   const [showFilter, setShowFilter] = useState<boolean>(false);
 
   return (
     <div>
       <div className="flex items-center	 max-w-lg py-4">
-        <h1 className={title({ size: "sm" })}>Quản lý người dùng&nbsp;</h1>
+        <h1 className={title({ size: "sm" })}>Quản lý thành viên&nbsp;</h1>
         <Tooltip content="Tạo">
           <Button
             className="text-sm cursor-pointer active:opacity-50"
@@ -236,7 +250,7 @@ export default function UserTable() {
             disableRipple
             disableAnimation
             startContent={<AddIcon />}
-            onPress={() => handleOpenUserModal(1)}
+            onPress={() => handleOpenMemberModal(1)}
           />
         </Tooltip>
         <Tooltip content="Bộ lọc">
@@ -253,15 +267,15 @@ export default function UserTable() {
           />
         </Tooltip>
       </div>
-      <UserFilterForm
+      <MemberFilterForm
         showFilter={showFilter}
-        setUserSearchParam={setUserSearchParam}
+        setMemberSearchParam={setMemberSearchParam}
       />
       <Table
         size="small"
         className="pt-4"
         columns={columns}
-        dataSource={intoTable(userList, page)}
+        dataSource={intoTable(memberList, page)}
         rowKey={(record) => record.action.id}
         pagination={{
           total: total,
@@ -269,7 +283,7 @@ export default function UserTable() {
           current: page,
           onChange: (page) => {
             setPage(page);
-            setUserSearchParam({
+            setMemberSearchParam({
               page: page,
               isExtraClub: true,
             });
@@ -309,8 +323,8 @@ export default function UserTable() {
         </ModalContent>
       </Modal>
       <Modal
-        isOpen={openUser}
-        onClose={handleCloseUserModal}
+        isOpen={openMember}
+        onClose={handleCloseMemberModal}
         size="2xl"
         isDismissable={false}
       >
@@ -319,11 +333,11 @@ export default function UserTable() {
             {(() => {
               switch (typeModal) {
                 case 1:
-                  return <span>Tạo người dùng</span>;
+                  return <span>Tạo thành viên</span>;
                 case 2:
-                  return <span>Chi tiết người dùng</span>;
+                  return <span>Chi tiết thành viên</span>;
                 case 3:
-                  return <span>Chỉnh sửa người dùng</span>;
+                  return <span>Chỉnh sửa thành viên</span>;
                 default:
                   return null;
               }
@@ -335,22 +349,22 @@ export default function UserTable() {
                 case 1:
                   return (
                     <>
-                      <UserForm onClose={handleCloseUserModal} />
+                      <MemberForm onClose={handleCloseMemberModal} />
                     </>
                   );
                 case 2:
                   return (
-                    <UserDetailForm
-                      onClose={handleCloseUserModal}
-                      user={user}
+                    <MemberDetailForm
+                      onClose={handleCloseMemberModal}
+                      member={member}
                       isDetail={true}
                     />
                   );
                 case 3:
                   return (
-                    <UserDetailForm
-                      onClose={handleCloseUserModal}
-                      user={user}
+                    <MemberDetailForm
+                      onClose={handleCloseMemberModal}
+                      member={member}
                       isDetail={false}
                     />
                   );

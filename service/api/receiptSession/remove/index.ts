@@ -8,6 +8,6 @@ export async function receiptSessionRemove(
   request: RemoveReceiptSessionRequest
 ): Promise<SimpleReply> {
   const httpClient = await getHttpClient();
-  const resp = await httpClient.get(API_URL, { params: request });
+  const resp = await httpClient.get(API_URL + `/${request.id}`);
   return resp.data;
 }

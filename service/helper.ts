@@ -1,8 +1,14 @@
-import { EnumProto_UserRole } from "@/generated/enumps";
-import URI, { QueryDataMap } from 'urijs'
+import {
+  EnumProto_Gender,
+  EnumProto_MemberStatus,
+  EnumProto_MemberType,
+  EnumProto_UserRole,
+} from "@/generated/enumps";
+import URI, { QueryDataMap } from "urijs";
 
-
-export function convertEnumRoleToVietnamese(role: EnumProto_UserRole | number): string {
+export function convertEnumRoleToVietnamese(
+  role: EnumProto_UserRole | number
+): string {
   switch (role) {
     case EnumProto_UserRole.ADMIN || 0: {
       return "Quản trị viên";
@@ -25,6 +31,57 @@ export function convertEnumRoleToVietnamese(role: EnumProto_UserRole | number): 
   }
 }
 
+export function convertEnumMemberStatusToVietnamese(
+  status: EnumProto_MemberStatus | number
+): string {
+  switch (status) {
+    case EnumProto_MemberStatus.BELIEVER || 0: {
+      return "Tín hữu";
+    }
+    case EnumProto_MemberStatus.SEEKER || 1: {
+      return "Thân hữu";
+    }
+    case EnumProto_MemberStatus.POTENTIAL_SEEKER || 2: {
+      return "Thân hữu tiềm năng";
+    }
+    default: {
+      return "Khác";
+    }
+  }
+}
+
+export function convertEnumMemberTypeToVietnamese(
+  type: EnumProto_MemberType | number
+): string {
+  switch (type) {
+    case EnumProto_MemberType.STUDENT || 0: {
+      return "Sinh viên";
+    }
+    case EnumProto_MemberType.WORKER || 1: {
+      return "Người đi làm";
+    }
+    default: {
+      return "Khác";
+    }
+  }
+}
+
+export function convertEnumGenderToVietnamese(
+  gender: EnumProto_Gender | number
+): string {
+  switch (gender) {
+    case EnumProto_Gender.MALE || 0: {
+      return "Nam";
+    }
+    case EnumProto_Gender.FEMALE || 1: {
+      return "Nữ";
+    }
+    default: {
+      return "Khác";
+    }
+  }
+}
+
 export function convertToVietNamDate(date: Date): string {
   return new Date(date).toLocaleDateString("vi-VN", {
     day: "2-digit",
@@ -34,15 +91,14 @@ export function convertToVietNamDate(date: Date): string {
 }
 
 export interface AppendQueryStringToUrlOptionInterface {
-  enableOverride: boolean
+  enableOverride: boolean;
 }
 
 export const isValidUrl = (url: string): boolean => {
-  if (typeof url !== 'string') return false
-  const instUri = new URI(url)
-  return instUri.is('url')
-}
-
+  if (typeof url !== "string") return false;
+  const instUri = new URI(url);
+  return instUri.is("url");
+};
 
 /*
   appendQueryStringToUrl('/order/1?a=1', {a: 2, b: 3}) -> '/order/1?a=2&b=3'
@@ -53,23 +109,22 @@ export const isValidUrl = (url: string): boolean => {
 export const appendQueryStringToUrl = (
   url: string,
   queryString: QueryDataMap,
-  inputOption?: AppendQueryStringToUrlOptionInterface,
+  inputOption?: AppendQueryStringToUrlOptionInterface
 ) => {
-  if (!isValidUrl(url)) return ''
+  if (!isValidUrl(url)) return "";
 
   const option: AppendQueryStringToUrlOptionInterface = {
     enableOverride: false,
     ...inputOption,
-  }
+  };
 
-  const instUri = new URI(url)
+  const instUri = new URI(url);
 
   if (option.enableOverride) {
-    instUri.search(queryString)
+    instUri.search(queryString);
   } else {
-    instUri.setQuery(queryString)
+    instUri.setQuery(queryString);
   }
 
-  return instUri.toString()
-}
-
+  return instUri.toString();
+};

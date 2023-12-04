@@ -44,12 +44,12 @@ export const siteConfig = {
     {
       key: "payment",
       label: "Phiếu thu",
-      href: "/dashboard/payment",
+      href: "/dashboard/paymentSession",
     },
     {
       key: "receipt",
       label: "Phiếu chi",
-      href: "/dashboard/receipt",
+      href: "/dashboard/receiptSession",
     },
     {
       key: "event",
