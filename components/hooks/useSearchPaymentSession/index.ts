@@ -10,6 +10,8 @@ export default function useSearchPaymentSession() {
   const [paymentSessionSearchParam, setPaymentSessionSearchParam] =
     useState<GetPaymentSessionConditionRequest>({
       page: 1,
+      isExtraUserConfirm: true,
+      isExtraUserDone: true,
     });
 
   const queryFn = useCallback(

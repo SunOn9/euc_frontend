@@ -1,3 +1,4 @@
+import { defaulLimit } from "@/config/env";
 import { EnumProto_UserRole } from "@/generated/enumps";
 import { Log } from "@/generated/log/log";
 import {
@@ -30,7 +31,7 @@ export type DataType = {
 export function intoTable(logList: Log[], page: number) {
   return logList.map((log, index) => {
     return {
-      stt: (page - 1) * 20 + index + 1,
+      stt: (page - 1) * defaulLimit + index + 1,
       action: log.action,
       subject: log.subject,
       userName: log.user?.name ?? "",

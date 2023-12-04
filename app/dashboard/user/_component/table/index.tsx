@@ -37,6 +37,7 @@ import { User } from "@/generated/user/user";
 import { userDetail } from "@/service/api/user/detail";
 import { UserReply } from "@/generated/user/user.reply";
 import UserFilterForm from "../form-filter-user";
+import { defaulLimit } from "@/config/env";
 
 export default function UserTable() {
   const columns: TableProps<DataType>["columns"] = [
@@ -265,12 +266,13 @@ export default function UserTable() {
         rowKey={(record) => record.action.id}
         pagination={{
           total: total,
-          defaultPageSize: 5,
+          defaultPageSize: defaulLimit,
           current: page,
           onChange: (page) => {
             setPage(page);
             setUserSearchParam({
               page: page,
+              limit: defaulLimit,
               isExtraClub: true,
             });
           },

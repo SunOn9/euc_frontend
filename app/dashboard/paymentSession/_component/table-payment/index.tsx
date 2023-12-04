@@ -1,13 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import {
   ActionType,
   DataType,
   intoTable,
-  statusColorMapStatus,
-  statusColorMapGender,
+  statusColorMapMoneyMethod,
 } from "./type";
 import {
   Modal,
@@ -19,7 +18,6 @@ import {
   ModalHeader,
   Tooltip,
 } from "@nextui-org/react";
-import useSearchMember from "../../../../../components/hooks/useSearchMember";
 import {
   EyeIcon,
   EditIcon,
@@ -27,48 +25,58 @@ import {
   AddIcon,
   SearchIcon,
 } from "@/components/icons";
-import { title } from "@/components/primitives";
-import { memberRemove } from "@/service/api/member/remove";
+import { paymentRemove } from "@/service/api/payment/remove";
 import { useQueryClient } from "@tanstack/react-query";
 import { ToastType, customToast } from "@/components/hooks/useToast";
-import MemberForm from "../form-create-payment";
-import MemberDetailForm from "../form-detail-payment";
-import { Member } from "@/generated/member/member";
-import { memberDetail } from "@/service/api/member/detail";
-import { MemberReply } from "@/generated/member/member.reply";
-import MemberFilterForm from "../form-filter-payment";
+import { Payment } from "@/generated/payment/payment";
+import { paymentDetail } from "@/service/api/payment/detail";
+import PaymentForm from "../form-create-payment";
+import { PaymentSession } from "@/generated/paymentSession/paymentSession";
+import { EnumProto_SessionStatus } from "@/generated/enumps";
+import PaymentDetailForm from "../form-detail-payment";
 
-export default function MemberTable() {
+type Props = {
+  paymentSession: PaymentSession;
+  onChange: CallableFunction;
+};
+
+export default function PaymentTable(props: Props) {
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "STT",
       dataIndex: "stt",
-      width: 10,
+      width: 15,
     },
     {
-      title: "Họ và Tên",
-      dataIndex: "name",
+      title: "Tiêu đề",
+      dataIndex: "title",
       width: 30,
     },
     {
-      title: "Biệt danh",
-      dataIndex: "nickName",
+      title: "Mô tả",
+      dataIndex: "description",
       width: 30,
     },
     {
-      title: "Sinh nhật",
-      dataIndex: "birthday",
+      title: "Số tiền",
+      dataIndex: "amount",
       width: 30,
     },
     {
-      title: "Tình trạng",
-      dataIndex: "status",
+      title: "Ngày tạo",
+      dataIndex: "createdAt",
+      width: 30,
+    },
+
+    {
+      title: "Phương thức",
+      dataIndex: "method",
       width: 30,
       render: (value) => {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMapStatus[value]}
+            color={statusColorMapMoneyMethod[value]}
             size="sm"
             variant="flat"
           >
@@ -78,44 +86,14 @@ export default function MemberTable() {
       },
     },
     {
-      title: "Sinh viên",
-      dataIndex: "type",
-      width: 20,
-      render: (value) => {
-        return value === true ? "✔️" : "❌";
-      },
-    },
-    {
-      title: "Quê",
-      dataIndex: "hometown",
+      title: "Biến động quỹ",
+      dataIndex: "fundAmount",
       width: 30,
-    },
-    {
-      title: "CLB",
-      dataIndex: "clubName",
-      width: 20,
-    },
-    {
-      title: "Giới tính",
-      dataIndex: "gender",
-      width: 20,
-      render: (value) => {
-        return (
-          <Chip
-            className="capitalize"
-            color={statusColorMapGender[value]}
-            size="sm"
-            variant="dot"
-          >
-            {value}
-          </Chip>
-        );
-      },
     },
     {
       title: "Hành động",
       dataIndex: "action",
-      width: 30,
+      width: 15,
       fixed: "right",
       render: (value: ActionType) => {
         if (value.isDeleted) {
@@ -123,7 +101,7 @@ export default function MemberTable() {
         } else
           return (
             <div className="relative flex items-center">
-              <Tooltip content="Chi tiết">
+              {/* <Tooltip content="Chi tiết">
                 <Button
                   className="text-md text-default-400 cursor-pointer active:opacity-50"
                   variant="light"
@@ -131,22 +109,32 @@ export default function MemberTable() {
                   disableRipple
                   disableAnimation
                   startContent={<EyeIcon />}
-                  onPress={() => handleOpenMemberModal(2, value.id)}
+                  onPress={() => {
+                    router.push(`payment/${value.id}`);
+                  }}
                 />
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip content="Sửa">
                 <Button
                   className="text-md text-default-400 cursor-pointer active:opacity-50"
+                  isDisabled={
+                    props.paymentSession.status !==
+                    EnumProto_SessionStatus.JUST_CREATE
+                  }
                   variant="light"
                   isIconOnly
                   disableRipple
                   disableAnimation
-                  onPress={() => handleOpenMemberModal(3, value.id)}
+                  onPress={() => handleOpenPaymentModal(3, value.id)}
                   startContent={<EditIcon />}
                 />
               </Tooltip>
               <Tooltip color="danger" content="Xoá">
                 <Button
+                  isDisabled={
+                    props.paymentSession.status !==
+                    EnumProto_SessionStatus.JUST_CREATE
+                  }
                   className="text-md text-danger cursor-pointer active:opacity-50"
                   variant="light"
                   isIconOnly
@@ -172,54 +160,32 @@ export default function MemberTable() {
     setId(0);
   };
 
-  const handleOpenMemberModal = async (type: number, id?: number) => {
-    let data: void | MemberReply | undefined;
-    if (id) {
-      data = await memberDetail({
-        id: id,
-        isExtraClub: true,
-        isExtraArea: true,
-      })
-        .then((res) => {
-          if (res.statusCode !== 200) {
-            customToast("Có lỗi xảy ra", ToastType.ERROR);
-            return;
-          } else {
-            if (res.payload) {
-              setMember(res.payload);
-            }
-            return res;
-          }
-        })
-        .catch((err) => {
-          customToast(`${err.response?.data?.message}`, ToastType.ERROR);
-          return;
-        });
-    }
-    if (data && data.payload) {
-      setMember(data.payload);
-    }
+  const handleOpenPaymentModal = async (type: number, id?: number) => {
     setTypeModal(type);
-    setOpenMember(true);
+    if (id) {
+      setId(id);
+    }
+    setOpenPayment(true);
   };
 
-  const handleCloseMemberModal = () => {
-    setId(0);
+  const handleClosePaymentModal = () => {
     setTypeModal(0);
-    setOpenMember(false);
+    setId(0);
+    setOpenPayment(false);
   };
 
   const onRemove = () => {
-    memberRemove({ id: id })
+    paymentRemove({ id: id })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Xóa thành viên thất bại", ToastType.ERROR);
+          customToast("Xóa phiên chi thất bại", ToastType.ERROR);
           handleClose();
           return;
         }
-        customToast(`Xóa thành viên Id: ${id} thành công`, ToastType.SUCCESS);
-        queryClient.invalidateQueries(["memberSearch"]);
+        customToast(`Xóa phiên chi Id: ${id} thành công`, ToastType.SUCCESS);
+        queryClient.invalidateQueries(["paymentSearch"]);
         handleClose();
+        props.onChange();
       })
       .catch(() => {
         customToast("Có lỗi xảy ra", ToastType.ERROR);
@@ -228,68 +194,59 @@ export default function MemberTable() {
       });
   };
 
-  const { memberList, total, setMemberSearchParam } = useSearchMember();
+  const handleChange = () => {
+    props.onChange();
+  };
+
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
-  const [openMember, setOpenMember] = useState(false);
+  const [openPayment, setOpenPayment] = useState(false);
   const [typeModal, setTypeModal] = useState(0);
   const queryClient = useQueryClient();
   const [id, setId] = useState(0);
-  const [member, setMember] = useState(Member.create());
-  const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [paymentList, setPaymentList] = useState<Payment[]>([]);
+
+  useEffect(() => {
+    setPaymentList(props.paymentSession.payment);
+  }, [props.paymentSession]);
 
   return (
     <div>
       <div className="flex items-center	 max-w-lg py-4">
-        <h1 className={title({ size: "sm" })}>Quản lý thành viên&nbsp;</h1>
-        <Tooltip content="Tạo">
-          <Button
-            className="text-sm cursor-pointer active:opacity-50"
-            variant="light"
-            isIconOnly
-            disableRipple
-            disableAnimation
-            startContent={<AddIcon />}
-            onPress={() => handleOpenMemberModal(1)}
-          />
-        </Tooltip>
-        <Tooltip content="Bộ lọc">
-          <Button
-            className="text-sm cursor-pointer active:opacity-50"
-            variant="light"
-            isIconOnly
-            disableRipple
-            disableAnimation
-            startContent={<SearchIcon />}
-            onPress={() => {
-              setShowFilter(!showFilter);
-            }}
-          />
-        </Tooltip>
+        <Button
+          isDisabled={
+            props.paymentSession.status !== EnumProto_SessionStatus.JUST_CREATE
+          }
+          color="primary"
+          className="bold text-sm cursor-pointer active:opacity-50"
+          disableRipple
+          disableAnimation
+          startContent={<AddIcon />}
+          onPress={() => handleOpenPaymentModal(1)}
+        >
+          Tạo phiên chi
+        </Button>
       </div>
-      <MemberFilterForm
-        showFilter={showFilter}
-        setMemberSearchParam={setMemberSearchParam}
-      />
+
       <Table
         size="small"
         className="pt-4"
         columns={columns}
-        dataSource={intoTable(memberList, page)}
+        dataSource={intoTable(paymentList, page)}
         rowKey={(record) => record.action.id}
-        pagination={{
-          total: total,
-          defaultPageSize: 5,
-          current: page,
-          onChange: (page) => {
-            setPage(page);
-            setMemberSearchParam({
-              page: page,
-              isExtraClub: true,
-            });
-          },
-          showSizeChanger: false,
-        }}
+        pagination={false}
+        // pagination={{
+        //   total: total,
+        //   defaultPageSize: 5,
+        //   current: page,
+        //   onChange: (page) => {
+        //     setPage(page);
+        //     setPaymentSearchParam({
+        //       page: page,
+        //     });
+        //   },
+        //   showSizeChanger: false,
+        // }}
         bordered
         scroll={{
           x: 1300,
@@ -323,8 +280,8 @@ export default function MemberTable() {
         </ModalContent>
       </Modal>
       <Modal
-        isOpen={openMember}
-        onClose={handleCloseMemberModal}
+        isOpen={openPayment}
+        onClose={handleClosePaymentModal}
         size="2xl"
         isDismissable={false}
       >
@@ -349,25 +306,23 @@ export default function MemberTable() {
                 case 1:
                   return (
                     <>
-                      <MemberForm onClose={handleCloseMemberModal} />
+                      <PaymentForm
+                        onClose={handleClosePaymentModal}
+                        id={props.paymentSession.id}
+                        onChange={handleChange}
+                      />
                     </>
                   );
-                case 2:
+                case 3: {
                   return (
-                    <MemberDetailForm
-                      onClose={handleCloseMemberModal}
-                      member={member}
-                      isDetail={true}
+                    <PaymentDetailForm
+                      onClose={handleClosePaymentModal}
+                      id={id}
+                      onChange={handleChange}
                     />
                   );
-                case 3:
-                  return (
-                    <MemberDetailForm
-                      onClose={handleCloseMemberModal}
-                      member={member}
-                      isDetail={false}
-                    />
-                  );
+                }
+
                 default:
                   return null;
               }

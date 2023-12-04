@@ -1,5 +1,5 @@
 "use client";
-import { GetMemberConditionRequest } from "@/generated/member/member.request";
+import { GetGuestConditionRequest } from "@/generated/guest/guest.request";
 import { Button } from "@nextui-org/react";
 import { Formik } from "formik";
 import { Input, Select, Typography } from "antd";
@@ -7,28 +7,27 @@ import { SearchDataType } from "./type";
 
 type Props = {
   showFilter: boolean;
-  setMemberSearchParam: React.Dispatch<
-    React.SetStateAction<GetMemberConditionRequest>
+  setGuestSearchParam: React.Dispatch<
+    React.SetStateAction<GetGuestConditionRequest>
   >;
 };
 
-export default function MemberFilterForm(props: Props) {
+export default function GuestFilterForm(props: Props) {
   const onFinish = async (values: SearchDataType) => {
-    const request = GetMemberConditionRequest.create({
+    const request = GetGuestConditionRequest.create({
       isExtraClub: true,
-      isExtraArea: true,
     });
 
     if (values?.name) {
       request.name = values.name;
     }
 
-    props.setMemberSearchParam(request);
+    props.setGuestSearchParam(request);
   };
 
   return (
     <Formik
-      initialValues={GetMemberConditionRequest.create({})}
+      initialValues={GetGuestConditionRequest.create({})}
       onSubmit={(values) => {
         onFinish(values);
       }}

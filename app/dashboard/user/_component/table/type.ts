@@ -1,3 +1,4 @@
+import { defaulLimit } from "@/config/env";
 import { User } from "@/generated/user/user";
 import { convertEnumRoleToVietnamese } from "@/service/helper";
 import { ChipProps } from "@nextui-org/react";
@@ -30,12 +31,12 @@ export type DataType = {
 export type ActionType = {
   id: number;
   isDeleted: boolean;
-}
+};
 
 export function intoTable(userList: User[], page: number) {
   return userList.map((user, index) => {
     return {
-      stt: (page - 1) * 20 + index + 1,
+      stt: (page - 1) * defaulLimit + index + 1,
       name: user.name,
       role: convertEnumRoleToVietnamese(user.role),
       email: user.email,
@@ -47,7 +48,10 @@ export function intoTable(userList: User[], page: number) {
      (${user.club?.abbreviation})`
           : ""),
       isDeleted: user.deletedAt ? "Vô hiệu hoá" : "Hoạt động",
-      action: { id: user.id, isDeleted: user.deletedAt ? true : false } as ActionType,
+      action: {
+        id: user.id,
+        isDeleted: user.deletedAt ? true : false,
+      } as ActionType,
     } as DataType;
   });
 }

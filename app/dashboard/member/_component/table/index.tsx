@@ -37,6 +37,7 @@ import { Member } from "@/generated/member/member";
 import { memberDetail } from "@/service/api/member/detail";
 import { MemberReply } from "@/generated/member/member.reply";
 import MemberFilterForm from "../form-filter-member";
+import { defaulLimit } from "@/config/env";
 
 export default function MemberTable() {
   const columns: TableProps<DataType>["columns"] = [
@@ -279,12 +280,13 @@ export default function MemberTable() {
         rowKey={(record) => record.action.id}
         pagination={{
           total: total,
-          defaultPageSize: 5,
+          defaultPageSize: defaulLimit,
           current: page,
           onChange: (page) => {
             setPage(page);
             setMemberSearchParam({
               page: page,
+              limit: defaulLimit,
               isExtraClub: true,
             });
           },

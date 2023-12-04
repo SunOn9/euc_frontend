@@ -5,6 +5,7 @@ import type { TableProps } from "antd";
 import { DataType, intoTable, statusColorMapRole } from "./type";
 import useSearchLog from "../hook/useSearchLog";
 import { Chip } from "@nextui-org/react";
+import { defaulLimit } from "@/config/env";
 
 const columns: TableProps<DataType>["columns"] = [
   {
@@ -86,12 +87,13 @@ export default function LogTable() {
       dataSource={intoTable(logList, page)}
       pagination={{
         total: total,
-        defaultPageSize: 20,
+        defaultPageSize: defaulLimit,
         current: page,
         onChange: (page) => {
           setPage(page);
           setLogSearchParam({
             page: page,
+            limit: defaulLimit,
             isExtraUser: true,
           });
         },

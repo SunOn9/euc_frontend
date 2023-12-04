@@ -1,8 +1,7 @@
 "use client";
-import { UpdateMemberRequest } from "@/generated/member/member.request";
+import { UpdateGuestRequest } from "@/generated/guest/guest.request";
 import {
   convertEnumGenderToVietnamese,
-  convertEnumMemberStatusToVietnamese,
   convertEnumMemberTypeToVietnamese,
   convertEnumRoleToVietnamese,
 } from "@/service/helper";
@@ -12,44 +11,25 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { ToastType, customToast } from "@/components/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
-import { Member } from "@/generated/member/member";
-import { memberUpdate } from "@/service/api/member/update";
+import { Guest } from "@/generated/guest/guest";
+import { guestUpdate } from "@/service/api/guest/update";
 import { DatePicker, Input, Select, Typography } from "antd";
 import useSearchArea from "@/components/hooks/useSearchArea";
-import {
-  EnumProto_MemberType,
-  EnumProto_MemberStatus,
-  EnumProto_Gender,
-} from "@/generated/enumps";
+import { EnumProto_Gender, EnumProto_MemberType } from "@/generated/enumps";
 import { dateFormat } from "@/config/env";
 import dayjs from "dayjs";
 
 type Props = {
-  member: Member;
+  guest: Guest;
   isDetail: boolean;
   onClose: CallableFunction;
 };
 
-export default function MemberDetailForm(props: Props) {
-  const { areaList, setAreaSearchParam } = useSearchArea();
-  const areaListData = areaList.map((each) => {
-    return {
-      value: each.id,
-      label: each.name,
-    };
-  });
-
-  const memberTypeList = Object.values(EnumProto_MemberType).map((each) => {
+export default function GuestDetailForm(props: Props) {
+  const guestTypeList = Object.values(EnumProto_MemberType).map((each) => {
     return {
       value: each,
       label: convertEnumMemberTypeToVietnamese(each),
-    };
-  });
-
-  const memberStatusList = Object.values(EnumProto_MemberStatus).map((each) => {
-    return {
-      value: each,
-      label: convertEnumMemberStatusToVietnamese(each),
     };
   });
 
@@ -66,11 +46,7 @@ export default function MemberDetailForm(props: Props) {
   //schema valie
   const ValidateSchema = Yup.object().shape({
     name: Yup.string().required("Bắt buộc"),
-    status: Yup.string()
-      .required("Bắt buộc")
-      .test("valid-status", "Tình trạng không hợp lệ", (value) => {
-        return value !== EnumProto_MemberStatus.UNRECOGNIZED;
-      }),
+
     type: Yup.string()
       .required("Bắt buộc")
       .test("valid-type", "Loại không hợp lệ", (value) => {
@@ -83,23 +59,21 @@ export default function MemberDetailForm(props: Props) {
       }),
   });
 
-  const handleMemberUpdate = (values: Member) => {
+  const handleGuestUpdate = (values: Guest) => {
     setIsLoading(true);
-    const request = UpdateMemberRequest.create({
+    const request = UpdateGuestRequest.create({
       conditions: {
-        id: props.member.id,
+        id: props.guest.id,
       },
       data: {
         name: values.name ?? undefined,
         nickName: values.nickName ?? undefined,
-        birthday: values.birthday ?? undefined,
-        status: values.status ?? undefined,
         type: values.type ?? undefined,
         gender: values.gender ?? undefined,
       },
     });
 
-    memberUpdate(request)
+    guestUpdate(request)
       .then((res) => {
         setIsLoading(false);
 
@@ -110,7 +84,7 @@ export default function MemberDetailForm(props: Props) {
         }
         customToast(`Cập nhật người dùng thành công`, ToastType.SUCCESS);
         props.onClose();
-        queryClient.invalidateQueries(["memberSearch"]);
+        queryClient.invalidateQueries(["guestSearch"]);
       })
       .catch((err) => {
         setIsLoading(false);
@@ -122,10 +96,10 @@ export default function MemberDetailForm(props: Props) {
 
   return (
     <Formik
-      initialValues={props.member}
+      initialValues={props.guest}
       validationSchema={props.isDetail ? null : ValidateSchema}
       onSubmit={(values) => {
-        handleMemberUpdate(values);
+        handleGuestUpdate(values);
       }}
     >
       {({
@@ -185,52 +159,6 @@ export default function MemberDetailForm(props: Props) {
 
               <div className="grid grid-cols-5 items-center">
                 <Typography.Paragraph className="justify-self-center col-span-1">
-                  Ngày sinh:
-                </Typography.Paragraph>
-                <div className="col-span-4">
-                  <DatePicker
-                    allowClear={false}
-                    disabled={props.isDetail}
-                    className="min-w-full	"
-                    placeholder="Chọn ngày sinh"
-                    onChange={(date, dateString) => {
-                      setFieldValue("birthday", dayjs(dateString, dateFormat));
-                    }}
-                    onBlur={handleBlur}
-                    format={dateFormat}
-                    value={values.birthday ? dayjs(values.birthday) : null}
-                  />
-                  {errors.birthday && touched.birthday && (
-                    <div className="text-red-500 text-xs">
-                      {errors.birthday}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-5 items-center">
-                <Typography.Paragraph className="justify-self-center col-span-1">
-                  Tình trạng:
-                </Typography.Paragraph>
-                <div className="col-span-4">
-                  <Select
-                    disabled={props.isDetail}
-                    className="min-w-full	"
-                    placeholder="Chọn tình trạng"
-                    onSelect={(value) => {
-                      setFieldValue("status", value);
-                    }}
-                    options={memberStatusList}
-                    onBlur={handleBlur}
-                    value={values.status}
-                  />
-                  {errors.status && touched.status && (
-                    <div className="text-red-500 text-xs">{errors.status}</div>
-                  )}
-                </div>
-              </div>
-              <div className="grid grid-cols-5 items-center">
-                <Typography.Paragraph className="justify-self-center col-span-1">
                   Giới tính:
                 </Typography.Paragraph>
                 <div className="col-span-4">
@@ -263,7 +191,7 @@ export default function MemberDetailForm(props: Props) {
                     onSelect={(value) => {
                       setFieldValue("type", value);
                     }}
-                    options={memberTypeList}
+                    options={guestTypeList}
                     onBlur={handleBlur}
                     value={values.type}
                   />
@@ -285,31 +213,8 @@ export default function MemberDetailForm(props: Props) {
                     placeholder=""
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.memberInClub[0].club?.name}
+                    value={values.club?.name}
                   />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-5 items-center">
-                <Typography.Paragraph className="justify-self-center col-span-1">
-                  Quê:
-                </Typography.Paragraph>
-                <div className="col-span-4">
-                  <Input
-                    readOnly
-                    type="text"
-                    name="hometown"
-                    placeholder=""
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.hometown?.name}
-                  />
-
-                  {errors.hometown && touched.hometown && (
-                    <div className="text-red-500 text-xs">
-                      {errors.hometown}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>

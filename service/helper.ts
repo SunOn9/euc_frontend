@@ -1,7 +1,10 @@
 import {
+  EnumProto_EventType,
   EnumProto_Gender,
   EnumProto_MemberStatus,
   EnumProto_MemberType,
+  EnumProto_MoneyMethod,
+  EnumProto_SessionStatus,
   EnumProto_UserRole,
 } from "@/generated/enumps";
 import URI, { QueryDataMap } from "urijs";
@@ -43,6 +46,66 @@ export function convertEnumMemberStatusToVietnamese(
     }
     case EnumProto_MemberStatus.POTENTIAL_SEEKER || 2: {
       return "Thân hữu tiềm năng";
+    }
+    default: {
+      return "Khác";
+    }
+  }
+}
+
+export function convertEnumSessionStatus(
+  status: EnumProto_SessionStatus
+): string {
+  switch (status) {
+    case EnumProto_SessionStatus.JUST_CREATE || 0: {
+      return "Mới tạo";
+    }
+    case EnumProto_SessionStatus.CONFIRMED || 1: {
+      return "Đã xác nhận";
+    }
+    case EnumProto_SessionStatus.DONE || 2: {
+      return "Đã hoàn thành";
+    }
+    case EnumProto_SessionStatus.CANCEL || 3: {
+      return "Huỷ";
+    }
+    default: {
+      return "Khác";
+    }
+  }
+}
+
+export function convertEnumEventTypeToVietnamese(
+  type: EnumProto_EventType
+): string {
+  switch (type) {
+    case EnumProto_EventType.WEEKLY_TRAINING || 0: {
+      return "Buổi tập hằng tuần";
+    }
+    case EnumProto_EventType.PLUS_TRAINING || 1: {
+      return "Tập Plus";
+    }
+    case EnumProto_EventType.TOURNAMENT || 2: {
+      return "Giải đấu";
+    }
+    default: {
+      return "Khác";
+    }
+  }
+}
+
+export function convertEnumMoneyMethodToVietnamese(
+  status: EnumProto_MoneyMethod
+): string {
+  switch (status) {
+    case EnumProto_MoneyMethod.CASH || 0: {
+      return "Tiền mặt";
+    }
+    case EnumProto_MoneyMethod.ATM_TRANSFER || 1: {
+      return "Chuyển khoản";
+    }
+    case EnumProto_MoneyMethod.MOMO_TRANSFER || 2: {
+      return "Momo";
     }
     default: {
       return "Khác";

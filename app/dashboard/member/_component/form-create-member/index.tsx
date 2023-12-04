@@ -107,15 +107,20 @@ export default function MemberForm(props: Props) {
 
         if (res.statusCode !== 200) {
           customToast("Tạo thành viên thất bại", ToastType.ERROR);
+          props.onClose();
+
           return;
         }
         customToast(`Tạo thành viên thành công`, ToastType.SUCCESS);
         queryClient.invalidateQueries(["memberSearch"]);
+        props.onClose();
       })
       .catch((err) => {
         setIsLoading(false);
 
         customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+        props.onClose();
+
         return;
       });
   };

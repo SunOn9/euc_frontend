@@ -1,34 +1,59 @@
 "use client";
-import { GetMemberConditionRequest } from "@/generated/member/member.request";
+import { GetPaymentSessionConditionRequest } from "@/generated/paymentSession/paymentSession.request";
 import { Button } from "@nextui-org/react";
 import { Formik } from "formik";
 import { Input, Select, Typography } from "antd";
 import { SearchDataType } from "./type";
+import { EnumProto_SessionStatus } from "@/generated/enumps";
+import { convertEnumSessionStatus } from "@/service/helper";
 
 type Props = {
   showFilter: boolean;
-  setMemberSearchParam: React.Dispatch<
-    React.SetStateAction<GetMemberConditionRequest>
+  setPaymentSessionSearchParam: React.Dispatch<
+    React.SetStateAction<GetPaymentSessionConditionRequest>
   >;
 };
 
-export default function MemberFilterForm(props: Props) {
+export default function PaymentSessionFilterForm(props: Props) {
+  const statusList = Object.values(EnumProto_SessionStatus).map((each) => {
+    return {
+      value: each,
+      label:
+        each !== EnumProto_SessionStatus.UNRECOGNIZED
+          ? convertEnumSessionStatus(each)
+          : "Tất cả",
+    };
+  });
+
   const onFinish = async (values: SearchDataType) => {
-    const request = GetMemberConditionRequest.create({
-      isExtraClub: true,
-      isExtraArea: true,
+    const request = GetPaymentSessionConditionRequest.create({
+      isExtraUserConfirm: true,
+      isExtraUserDone: true,
     });
 
-    if (values?.name) {
-      request.name = values.name;
+    if (values.title) {
+      request.title = values.title;
     }
 
-    props.setMemberSearchParam(request);
+    if (values.description) {
+      request.description = values.description;
+    }
+
+    if (
+      values.status &&
+      values.status !== EnumProto_SessionStatus.UNRECOGNIZED
+    ) {
+      request.status = values.status;
+    }
+
+    props.setPaymentSessionSearchParam(request);
   };
 
   return (
     <Formik
-      initialValues={GetMemberConditionRequest.create({})}
+      initialValues={GetPaymentSessionConditionRequest.create({
+        status: EnumProto_SessionStatus.UNRECOGNIZED,
+      })}
       onSubmit={(values) => {
         onFinish(values);
       }}
@@ -50,47 +75,68 @@ export default function MemberFilterForm(props: Props) {
                 <div className="grid grid-cols-3 gap-2">
                   <div className="grid grid-cols-5 items-center">
                     <Typography.Paragraph className="justify-self-center col-span-1">
-                      Tên:
+                      Tiêu đề:
                     </Typography.Paragraph>
                     <div className="col-span-4">
                       <Input
                         type="text"
-                        name="name"
-                        placeholder="Nhập tên"
+                        name="title"
+                        placeholder="Nhập tiêu đề"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.name}
+                        value={values.title}
                       />
-                      {errors.name && touched.name && (
+                      {errors.title && touched.title && (
                         <div className="text-red-500 text-xs">
-                          {errors.name}
+                          {errors.title}
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {/* <div className="grid grid-cols-5 items-center">
+                  <div className="grid grid-cols-5 items-center">
+                    <Typography.Paragraph className="justify-self-center col-span-1">
+                      Miêu tả:
+                    </Typography.Paragraph>
+                    <div className="col-span-4">
+                      <Input
+                        type="text"
+                        name="description"
+                        placeholder="Nhập miêu tả"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.description}
+                      />
+                      {errors.description && touched.description && (
+                        <div className="text-red-500 text-xs">
+                          {errors.description}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-5 items-center">
                     <Typography.Paragraph className="justify-self-center col-span-1">
                       Trạng thái:
                     </Typography.Paragraph>
                     <div className="col-span-4">
                       <Select
+                        className="min-w-full	"
                         placeholder="Chọn trạng thái"
-                        className="min-w-full "
                         onSelect={(value) => {
-                          setFieldValue("isDeleted", value);
+                          setFieldValue("status", value);
                         }}
-                        options={isDeleted}
+                        options={statusList}
                         onBlur={handleBlur}
-                        value={values.isDeleted}
+                        value={values.status}
                       />
-                      {errors.isDeleted && touched.isDeleted && (
+                      {errors.status && touched.status && (
                         <div className="text-red-500 text-xs">
-                          {errors.isDeleted}
+                          {errors.status}
                         </div>
                       )}
                     </div>
-                  </div> */}
+                  </div>
                 </div>
 
                 <div className="flex justify-end mt-4 gap-4">

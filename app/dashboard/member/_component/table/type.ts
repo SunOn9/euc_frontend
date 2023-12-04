@@ -1,3 +1,4 @@
+import { defaulLimit } from "@/config/env";
 import { EnumProto_MemberType } from "@/generated/enumps";
 import { Member } from "@/generated/member/member";
 import {
@@ -41,7 +42,7 @@ export type ActionType = {
 export function intoTable(memberList: Member[], page: number) {
   return memberList.map((member, index) => {
     return {
-      stt: (page - 1) * 20 + index + 1,
+      stt: (page - 1) * defaulLimit + index + 1,
       name: member.name,
       nickName: member.nickName,
       birthday: member.birthday ? convertToVietNamDate(member.birthday) : "",

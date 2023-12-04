@@ -5,12 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Log } from "@/generated/log/log";
 import { logSearch } from "@/service/api/log/search";
 import { GetLogConditionRequest } from "@/generated/log/log.request";
+import { defaulLimit } from "@/config/env";
 
 export default function useSearchLog() {
   const [logSearchParam, setLogSearchParam] = useState<GetLogConditionRequest>({
     isExtraUser: true,
     page: 1,
-    limit: 20,
+    limit: defaulLimit,
   });
 
   const queryFn = useCallback(

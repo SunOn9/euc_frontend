@@ -5,3 +5,5 @@ export const APP_CONFIG = {
 };
 
 export const dateFormat = "DD/MM/YYYY";
+
+export const defaulLimit = 10;
