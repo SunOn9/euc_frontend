@@ -41,5 +41,6 @@ export default function useSearchMember() {
     memberList,
     setMemberSearchParam,
     total,
+    memberSearchParam,
   };
 }

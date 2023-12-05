@@ -122,6 +122,7 @@ export default function MemberDetailForm(props: Props) {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={props.member}
       validationSchema={props.isDetail ? null : ValidateSchema}
       onSubmit={(values) => {

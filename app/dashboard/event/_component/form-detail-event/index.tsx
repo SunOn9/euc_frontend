@@ -1,18 +1,11 @@
 "use client";
-import { UpdateEventRequest } from "@/generated/event/event.request";
-import { convertEnumEventTypeToVietnamese } from "@/service/helper";
-import { Button } from "@nextui-org/react";
+import {
+  convertEnumEventTypeToVietnamese,
+  convertToVietNamDate,
+} from "@/service/helper";
 import { Formik } from "formik";
-import { useState } from "react";
-import * as Yup from "yup";
-import { ToastType, customToast } from "@/components/hooks/useToast";
-import { useQueryClient } from "@tanstack/react-query";
 import { Event } from "@/generated/event/event";
-import { eventUpdate } from "@/service/api/event/update";
-import { DatePicker, Input, Select, Typography } from "antd";
-import { EnumProto_EventType } from "@/generated/enumps";
-import { dateFormat } from "@/config/env";
-import dayjs from "dayjs";
+import { Input, Typography } from "antd";
 
 type Props = {
   event: Event;
@@ -20,66 +13,8 @@ type Props = {
 };
 
 export default function EventDetailForm(props: Props) {
-  const eventTypeList = Object.values(EnumProto_EventType).map((each) => {
-    return {
-      value: each,
-      label: convertEnumEventTypeToVietnamese(each),
-    };
-  });
-
-  const queryClient = useQueryClient();
-  const [isLoading, setIsLoading] = useState(false);
-
-  //schema valie
-  const ValidateSchema = Yup.object().shape({
-    name: Yup.string().required("Bắt buộc"),
-
-    type: Yup.string()
-      .required("Bắt buộc")
-      .test("valid-type", "Loại không hợp lệ", (value) => {
-        return value !== EnumProto_EventType.UNRECOGNIZED;
-      }),
-  });
-
-  const handleEventUpdate = (values: Event) => {
-    setIsLoading(true);
-    const request = UpdateEventRequest.create({
-      conditions: {
-        id: props.event.id,
-      },
-      data: {
-        name: values.name ?? undefined,
-
-        type: values.type ?? undefined,
-      },
-    });
-
-    eventUpdate(request)
-      .then((res) => {
-        setIsLoading(false);
-
-        if (res.statusCode !== 200) {
-          customToast("Cập nhật người dùng thất bại", ToastType.ERROR);
-          return;
-        }
-        customToast(`Cập nhật người dùng thành công`, ToastType.SUCCESS);
-        queryClient.invalidateQueries(["eventSearch"]);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
-        return;
-      });
-  };
-
   return (
-    <Formik
-      initialValues={props.event}
-      validationSchema={}
-      onSubmit={(values) => {
-        handleEventUpdate(values);
-      }}
-    >
+    <Formik enableReinitialize initialValues={props.event} onSubmit={() => {}}>
       {({
         values,
         errors,
@@ -87,7 +22,6 @@ export default function EventDetailForm(props: Props) {
         handleChange,
         handleBlur,
         handleSubmit,
-        setFieldValue,
         /* and other goodies */
       }) => (
         <>
@@ -99,7 +33,7 @@ export default function EventDetailForm(props: Props) {
                 </Typography.Paragraph>
                 <div className="col-span-4">
                   <Input
-                    readOnly={props.isDetail}
+                    readOnly={true}
                     type="text"
                     name="name"
                     placeholder="Nhập tên"
@@ -118,23 +52,17 @@ export default function EventDetailForm(props: Props) {
                   Ngày bắt đầu:
                 </Typography.Paragraph>
                 <div className="col-span-4">
-                  <DatePicker
-                    allowClear={false}
-                    disabled={props.isDetail}
-                    className="min-w-full	"
-                    placeholder="Chọn ngày bắt đầu"
-                    onChange={(_, dateString) => {
-                      setFieldValue(
-                        "startEventDate",
-                        dayjs(dateString, dateFormat)
-                      );
-                    }}
+                  <Input
+                    readOnly={true}
+                    type="text"
+                    name="startEventDate"
+                    placeholder="Nhập tên"
+                    onChange={handleChange}
                     onBlur={handleBlur}
-                    format={dateFormat}
                     value={
                       values.startEventDate
-                        ? dayjs(values.startEventDate)
-                        : null
+                        ? convertToVietNamDate(values.startEventDate)
+                        : ""
                     }
                   />
                   {errors.startEventDate && touched.startEventDate && (
@@ -150,21 +78,17 @@ export default function EventDetailForm(props: Props) {
                   Ngày kết thúc:
                 </Typography.Paragraph>
                 <div className="col-span-4">
-                  <DatePicker
-                    allowClear={false}
-                    disabled={props.isDetail}
-                    className="min-w-full	"
-                    placeholder="Chọn ngày kết thúc"
-                    onChange={(_, dateString) => {
-                      setFieldValue(
-                        "endEventDate",
-                        dayjs(dateString, dateFormat)
-                      );
-                    }}
+                  <Input
+                    readOnly={true}
+                    type="text"
+                    name="endEventDate"
+                    // placeholder="Nhập tên"
+                    onChange={handleChange}
                     onBlur={handleBlur}
-                    format={dateFormat}
                     value={
-                      values.endEventDate ? dayjs(values.endEventDate) : null
+                      values.endEventDate
+                        ? convertToVietNamDate(values.endEventDate)
+                        : ""
                     }
                   />
                   {errors.endEventDate && touched.endEventDate && (
@@ -180,16 +104,18 @@ export default function EventDetailForm(props: Props) {
                   Loại:
                 </Typography.Paragraph>
                 <div className="col-span-4">
-                  <Select
-                    disabled={props.isDetail}
-                    className="min-w-full	"
-                    placeholder="Chọn loại"
-                    onSelect={(value) => {
-                      setFieldValue("type", value);
-                    }}
-                    options={eventTypeList}
+                  <Input
+                    readOnly={true}
+                    type="text"
+                    name="type"
+                    // placeholder="Nhập tên"
+                    onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.type}
+                    value={
+                      values.type
+                        ? convertEnumEventTypeToVietnamese(values.type)
+                        : ""
+                    }
                   />
                   {errors.type && touched.type && (
                     <div className="text-red-500 text-xs">{errors.type}</div>
@@ -197,28 +123,6 @@ export default function EventDetailForm(props: Props) {
                 </div>
               </div>
             </div>
-
-            {props.isDetail === false ? (
-              <div className="flex justify-end mt-4 gap-4">
-                <Button
-                  className="bold"
-                  color="danger"
-                  variant="flat"
-                  isLoading={isLoading}
-                  onPress={() => props.onClose()}
-                >
-                  Huỷ
-                </Button>
-                <Button
-                  className="bold"
-                  color="primary"
-                  isLoading={isLoading}
-                  type="submit"
-                >
-                  Cập nhật
-                </Button>
-              </div>
-            ) : null}
           </form>
         </>
       )}

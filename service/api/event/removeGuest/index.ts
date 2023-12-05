@@ -4,7 +4,7 @@ import { RemoveGuestFromEventRequest } from "@/generated/event/event.request";
 
 const API_URL = "/event/remove-guest";
 
-export async function removeGuest(
+export async function removeGuestEvent(
   request: RemoveGuestFromEventRequest
 ): Promise<SimpleReply> {
   const httpClient = await getHttpClient();

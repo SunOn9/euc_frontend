@@ -149,7 +149,7 @@ export default function GuestTable() {
       })
         .then((res) => {
           if (res.statusCode !== 200) {
-            customToast("Có lỗi xảy ra", ToastType.ERROR);
+            customToast(`${err.response?.data?.message}`, ToastType.ERROR);
             return;
           } else {
             if (res.payload) {
@@ -180,16 +180,16 @@ export default function GuestTable() {
     guestRemove({ id: id })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Xóa thành viên thất bại", ToastType.ERROR);
+          customToast("Xóa khách thất bại", ToastType.ERROR);
           handleClose();
           return;
         }
-        customToast(`Xóa thành viên Id: ${id} thành công`, ToastType.SUCCESS);
+        customToast(`Xóa khách Id: ${id} thành công`, ToastType.SUCCESS);
         queryClient.invalidateQueries(["guestSearch"]);
         handleClose();
       })
       .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });
@@ -208,7 +208,7 @@ export default function GuestTable() {
   return (
     <div>
       <div className="flex items-center	 max-w-lg py-4">
-        <h1 className={title({ size: "sm" })}>Quản lý thành viên&nbsp;</h1>
+        <h1 className={title({ size: "sm" })}>Quản lý khách&nbsp;</h1>
         <Tooltip content="Tạo">
           <Button
             className="text-sm cursor-pointer active:opacity-50"
@@ -301,11 +301,11 @@ export default function GuestTable() {
             {(() => {
               switch (typeModal) {
                 case 1:
-                  return <span>Tạo thành viên</span>;
+                  return <span>Tạo khách</span>;
                 case 2:
-                  return <span>Chi tiết thành viên</span>;
+                  return <span>Chi tiết khách</span>;
                 case 3:
-                  return <span>Chỉnh sửa thành viên</span>;
+                  return <span>Chỉnh sửa khách</span>;
                 default:
                   return null;
               }

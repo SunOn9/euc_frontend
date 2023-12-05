@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConfigProvider, ThemeConfig } from "antd";
 import lightTheme from "@/config/theme/lightThemeConfig";
 import darkTheme from "@/config/theme/darkThemeConfig";
+import ErrorBoundary from "@/components/error";
 
 const NextUIProvider = dynamic(
   () => import("@nextui-org/system").then((module) => module.NextUIProvider),
@@ -44,7 +45,9 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <QueryClientProvider client={client}>
       <ConfigProvider theme={antTheme}>
         <NextUIProvider>
-          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+          <ErrorBoundary>
+            <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+          </ErrorBoundary>
           <ToastContainer />
         </NextUIProvider>
       </ConfigProvider>

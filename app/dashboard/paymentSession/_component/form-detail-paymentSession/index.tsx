@@ -114,19 +114,19 @@ export default function PaymentSessionDetailForm(props: Props) {
     paymentSessionRemove({ id: props.paymentSession.id })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Huỷ chi thất bại", ToastType.ERROR);
+          customToast("Huỷ phiếu chi thất bại", ToastType.ERROR);
           handleClose();
           return;
         }
         customToast(
-          `Huỷ chi Id: ${props.paymentSession.id} thành công`,
+          `Huỷ phíêu chi Id: ${props.paymentSession.id} thành công`,
           ToastType.SUCCESS
         );
         props.onChange();
         handleClose();
       })
       .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });
@@ -136,6 +136,7 @@ export default function PaymentSessionDetailForm(props: Props) {
   return (
     <>
       <Formik
+        enableReinitialize
         initialValues={props.paymentSession}
         validationSchema={props.isDetail ? null : ValidateSchema}
         onSubmit={(values) => {
@@ -170,7 +171,7 @@ export default function PaymentSessionDetailForm(props: Props) {
                       placeholder="Nhập tiêu đề"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.title || props.paymentSession.title}
+                      value={values.title}
                     />
                     {errors.title && touched.title && (
                       <div className="text-red-500 text-xs">{errors.title}</div>
@@ -193,9 +194,7 @@ export default function PaymentSessionDetailForm(props: Props) {
                       placeholder="Nhập mô tả"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={
-                        values.description || props.paymentSession.description
-                      }
+                      value={values.description}
                     />
                     {errors.description && touched.description && (
                       <div className="text-red-500 text-xs">

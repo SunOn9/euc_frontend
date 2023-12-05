@@ -1,9 +1,9 @@
-import PaymentTable from "./_component/table";
+import EventTable from "./_component/table";
 
-export default function PaymentSession() {
+export default function Event() {
   return (
     <section className="flex flex-col">
-      <PaymentTable />
+      <EventTable />
     </section>
   );
 }

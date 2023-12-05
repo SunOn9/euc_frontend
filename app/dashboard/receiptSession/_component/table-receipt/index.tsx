@@ -188,7 +188,7 @@ export default function ReceiptTable(props: Props) {
         props.onChange();
       })
       .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });

@@ -22,7 +22,7 @@ export default function PaymentSessionDetail() {
     })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Có lỗi xảy ra", ToastType.ERROR);
+          customToast(`${err.response?.data?.message}`, ToastType.ERROR);
           return;
         } else {
           if (res.payload) {

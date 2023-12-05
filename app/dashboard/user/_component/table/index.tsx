@@ -169,7 +169,7 @@ export default function UserTable() {
       })
         .then((res) => {
           if (res.statusCode !== 200) {
-            customToast("Có lỗi xảy ra", ToastType.ERROR);
+            customToast(`Có lỗi xảy ra`, ToastType.ERROR);
             return;
           } else {
             if (res.payload) {
@@ -208,8 +208,8 @@ export default function UserTable() {
         queryClient.invalidateQueries(["userSearch"]);
         handleClose();
       })
-      .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+      .catch((err) => {
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });

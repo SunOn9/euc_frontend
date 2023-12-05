@@ -78,11 +78,11 @@ export default function GuestDetailForm(props: Props) {
         setIsLoading(false);
 
         if (res.statusCode !== 200) {
-          customToast("Cập nhật người dùng thất bại", ToastType.ERROR);
+          customToast("Cập nhật khách thất bại", ToastType.ERROR);
           props.onClose();
           return;
         }
-        customToast(`Cập nhật người dùng thành công`, ToastType.SUCCESS);
+        customToast(`Cập nhật khách thành công`, ToastType.SUCCESS);
         props.onClose();
         queryClient.invalidateQueries(["guestSearch"]);
       })
@@ -96,6 +96,7 @@ export default function GuestDetailForm(props: Props) {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={props.guest}
       validationSchema={props.isDetail ? null : ValidateSchema}
       onSubmit={(values) => {

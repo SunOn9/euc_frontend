@@ -61,17 +61,12 @@ export const siteConfig = {
     {
       key: "user-info",
       label: "Thông tin",
-      href: "/dashboard/user",
-    },
-    {
-      key: "change-password",
-      label: "Đổi mật khẩu",
-      href: "/dashboard/user/change-password",
+      href: "/dashboard/user/info",
     },
     {
       key: "logout",
       label: "Đăng xuất",
-      href: "/dashboard/logout",
+      href: "/logout",
     },
   ] as navItem[],
   links: {

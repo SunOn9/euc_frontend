@@ -114,19 +114,19 @@ export default function ReceiptSessionDetailForm(props: Props) {
     receiptSessionRemove({ id: props.receiptSession.id })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Huỷ thu thất bại", ToastType.ERROR);
+          customToast("Huỷ phíêu thu thất bại", ToastType.ERROR);
           handleClose();
           return;
         }
         customToast(
-          `Huỷ thu Id: ${props.receiptSession.id} thành công`,
+          `Huỷ phíêu thu Id: ${props.receiptSession.id} thành công`,
           ToastType.SUCCESS
         );
         props.onChange();
         handleClose();
       })
-      .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+      .catch((err) => {
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });

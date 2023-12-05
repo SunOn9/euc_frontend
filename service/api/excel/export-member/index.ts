@@ -4,8 +4,15 @@ import { ExportMemberRequest } from "@/generated/member/member.request";
 
 const API_URL = "/excel/export-member";
 
-export async function excelUpdate(request: ExportMemberRequest): Promise<Null> {
+export async function exportMember(
+  request: ExportMemberRequest
+): Promise<Null> {
   const httpClient = await getHttpClient();
-  const resp = await httpClient.post(API_URL, request);
-  return resp.data;
+  const resp = await httpClient.post(API_URL, request, {
+    responseType: "blob",
+  });
+
+  const url = window.URL.createObjectURL(new Blob([resp.data]));
+
+  return url;
 }

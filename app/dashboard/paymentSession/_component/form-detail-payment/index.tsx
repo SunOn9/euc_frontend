@@ -32,7 +32,7 @@ export default function PaymentDetailForm(props: Props) {
     })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast("Có lỗi xảy ra", ToastType.ERROR);
+          customToast(`${err.response?.data?.message}`, ToastType.ERROR);
           return;
         } else {
           if (res.payload) {
@@ -56,13 +56,13 @@ export default function PaymentDetailForm(props: Props) {
 
   //schema valie
   const ValidateSchema = Yup.object().shape({
-    amount: Yup.string().test(
-      "valid-amout",
-      "Số tiền không hợp lệ",
-      (value) => {
-        return value !== "0";
-      }
-    ),
+    // amount: Yup.string().test(
+    //   "valid-amout",
+    //   "Số tiền không hợp lệ",
+    //   (value) => {
+    //     return value !== "0";
+    //   }
+    // ),
     method: Yup.string().test(
       "valid-method",
       "Phơơng thức không hợp lệ",
@@ -74,39 +74,45 @@ export default function PaymentDetailForm(props: Props) {
 
   const handlePaymentUpdate = (values: Payment) => {
     setIsLoading(true);
-    paymentUpdate(
-      UpdatePaymentRequest.create({
-        conditions: { id: props.id },
-        data: {
-          title: values.title ?? undefined,
-          description: values.description ?? undefined,
-          method: values.method ?? undefined,
-          amount: values.amount ?? undefined,
-        },
-      })
-    )
-      .then((res) => {
-        setIsLoading(false);
 
-        if (res.statusCode !== 200) {
-          customToast("Cập nhật phiên chi thất bại", ToastType.ERROR);
-          props.onClose();
-          return;
-        }
-        customToast(`Cập nhật phiên chi thành công`, ToastType.SUCCESS);
-        props.onClose();
-        props.onChange();
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
-        props.onClose();
-        return;
-      });
+    const request = UpdatePaymentRequest.create({
+      conditions: { id: props.id },
+      data: {
+        title: values.title ?? undefined,
+        description: values.description ?? undefined,
+        method: values.method ?? undefined,
+        amount: values.amount ?? undefined,
+      },
+    });
+
+    console.log(request);
+
+    // paymentUpdate(
+    //   request
+    // )
+    //   .then((res) => {
+    //     setIsLoading(false);
+
+    //     if (res.statusCode !== 200) {
+    //       customToast("Cập nhật phiên chi thất bại", ToastType.ERROR);
+    //       props.onClose();
+    //       return;
+    //     }
+    //     customToast(`Cập nhật phiên chi thành công`, ToastType.SUCCESS);
+    //     props.onClose();
+    //     props.onChange();
+    //   })
+    //   .catch((err) => {
+    //     setIsLoading(false);
+    //     customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+    //     props.onClose();
+    //     return;
+    //   });
   };
 
   return (
     <Formik
+      enableReinitialize
       initialValues={payment}
       validationSchema={ValidateSchema}
       onSubmit={(values) => {
@@ -137,7 +143,7 @@ export default function PaymentDetailForm(props: Props) {
                     placeholder="Nhập tiêu đề"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.title || payment.title}
+                    value={values.title}
                   />
                   {errors.title && touched.title && (
                     <div className="text-red-500 text-xs">{errors.title}</div>
@@ -156,7 +162,7 @@ export default function PaymentDetailForm(props: Props) {
                     placeholder="Nhập mô tả"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.description || payment.description}
+                    value={values.description}
                   />
                   {errors.description && touched.description && (
                     <div className="text-red-500 text-xs">
@@ -177,7 +183,7 @@ export default function PaymentDetailForm(props: Props) {
                     placeholder="Nhập số tiền"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.amount || payment.amount}
+                    value={values.amount}
                   />
                   {errors.amount && touched.amount && (
                     <div className="text-red-500 text-xs">{errors.amount}</div>
@@ -198,7 +204,7 @@ export default function PaymentDetailForm(props: Props) {
                     }}
                     options={methodList}
                     onBlur={handleBlur}
-                    value={values.method || payment.method}
+                    value={values.method}
                   />
                   {errors.method && touched.method && (
                     <div className="text-red-500 text-xs">{errors.method}</div>

@@ -37,9 +37,46 @@ import { Member } from "@/generated/member/member";
 import { memberDetail } from "@/service/api/member/detail";
 import { MemberReply } from "@/generated/member/member.reply";
 import MemberFilterForm from "../form-filter-member";
-import { defaulLimit } from "@/config/env";
+import { APP_CONFIG, defaulLimit } from "@/config/env";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function MemberTable() {
+  const cookies = Cookies.get("euc.sessionid"); // => 'value cookies'
+  const handleExportMember = async () => {
+    try {
+      const response = await axios.post(
+        `${APP_CONFIG.API_BASE_URL}/excel/export-member`,
+        {
+          conditions: {
+            ...memberSearchParam,
+          },
+          options: {},
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            sessionId: cookies,
+          },
+          responseType: "blob", // Set the response type to 'blob' to handle file download
+        }
+      );
+
+      // Create a temporary URL for the downloaded file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Create a link element and simulate a click to trigger the file download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "exported-member.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      // Handle any error that occurred during the file download
+      console.error("Error downloading file:", error);
+    }
+  };
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "STT",
@@ -183,7 +220,7 @@ export default function MemberTable() {
       })
         .then((res) => {
           if (res.statusCode !== 200) {
-            customToast("Có lỗi xảy ra", ToastType.ERROR);
+            customToast(`Có lỗi xảy ra`, ToastType.ERROR);
             return;
           } else {
             if (res.payload) {
@@ -222,14 +259,15 @@ export default function MemberTable() {
         queryClient.invalidateQueries(["memberSearch"]);
         handleClose();
       })
-      .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+      .catch((err) => {
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });
   };
 
-  const { memberList, total, setMemberSearchParam } = useSearchMember();
+  const { memberList, total, setMemberSearchParam, memberSearchParam } =
+    useSearchMember();
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [openMember, setOpenMember] = useState(false);
@@ -267,6 +305,15 @@ export default function MemberTable() {
             }}
           />
         </Tooltip>
+        <Button
+          className="text-md cursor-pointer active:opacity-50"
+          size="sm"
+          disableRipple
+          disableAnimation
+          onPress={handleExportMember}
+        >
+          Xuất file
+        </Button>
       </div>
       <MemberFilterForm
         showFilter={showFilter}

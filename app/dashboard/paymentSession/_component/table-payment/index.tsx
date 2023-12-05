@@ -188,7 +188,7 @@ export default function PaymentTable(props: Props) {
         props.onChange();
       })
       .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });
@@ -290,11 +290,11 @@ export default function PaymentTable(props: Props) {
             {(() => {
               switch (typeModal) {
                 case 1:
-                  return <span>Tạo thành viên</span>;
+                  return <span>Tạo phiếu chi</span>;
                 case 2:
-                  return <span>Chi tiết thành viên</span>;
+                  return <span>Chi tiết phiếu chi</span>;
                 case 3:
-                  return <span>Chỉnh sửa thành viên</span>;
+                  return <span>Chỉnh sửa phiếu chi</span>;
                 default:
                   return null;
               }

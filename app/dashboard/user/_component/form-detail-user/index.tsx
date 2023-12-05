@@ -85,6 +85,7 @@ export default function UserDetailForm(props: Props) {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={props.user}
       validationSchema={props.isDetail ? null : ValidateSchema}
       onSubmit={(values) => {
@@ -164,27 +165,28 @@ export default function UserDetailForm(props: Props) {
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-5 items-center">
+
+              <div className="grid grid-cols-5 items-center ">
                 <Typography.Paragraph className="justify-self-center col-span-1">
                   Phân quyền:
                 </Typography.Paragraph>
                 <div className="col-span-4">
-                  <Select
-                    disabled={props.isDetail}
+                  <Input
+                    readOnly={props.isDetail}
+                    className=""
+                    type="text"
+                    name="role"
                     placeholder="Chọn phân quyền"
-                    className="min-w-full "
-                    onSelect={(value) => {
-                      setFieldValue("role", value);
-                    }}
-                    options={enumUserRole}
+                    onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.role}
+                    value={convertEnumRoleToVietnamese(values.role)}
                   />
                   {errors.role && touched.role && (
                     <div className="text-red-500 text-xs">{errors.role}</div>
                   )}
                 </div>
               </div>
+
               <div className="grid grid-cols-5 items-center">
                 <Typography.Paragraph className="justify-self-center col-span-1">
                   CLB:

@@ -10,6 +10,8 @@ export default function useSearchClub() {
   const [clubSearchParam, setClubSearchParam] =
     useState<GetClubConditionRequest>({
       page: 1,
+      isExtraArea: true,
+      isExtraClubFee: true,
     });
 
   const queryFn = useCallback(

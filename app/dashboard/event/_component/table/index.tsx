@@ -119,7 +119,7 @@ export default function EventTable() {
                   disableRipple
                   disableAnimation
                   startContent={<EyeIcon />}
-                  onPress={() => router.push(`/event/${value.id}`)}
+                  onPress={() => router.push(`event/${value.id}`)}
                 />
               </Tooltip>
               <Tooltip content="Sửa">
@@ -176,7 +176,7 @@ export default function EventTable() {
       })
         .then((res) => {
           if (res.statusCode !== 200) {
-            customToast("Có lỗi xảy ra", ToastType.ERROR);
+            customToast(`${err.response?.data?.message}`, ToastType.ERROR);
             return;
           } else {
             if (res.payload) {
@@ -216,7 +216,7 @@ export default function EventTable() {
         handleClose();
       })
       .catch(() => {
-        customToast("Có lỗi xảy ra", ToastType.ERROR);
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });
