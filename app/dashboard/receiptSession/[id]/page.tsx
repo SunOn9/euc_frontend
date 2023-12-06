@@ -22,7 +22,7 @@ export default function ReceiptSessionDetail() {
     })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+          customToast(`Có lỗi xảy ra`, ToastType.ERROR);
           return;
         } else {
           if (res.payload) {

@@ -1,7 +1,5 @@
 "use client";
-import { ToastType, customToast } from "@/components/hooks/useToast";
 import { logout } from "@/service/api/auth/logout";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -11,11 +9,10 @@ export default function Logout() {
   useEffect(() => {
     logout()
       .then(() => {
-        Cookies.remove("euc.sessionid");
         router.push("/login");
       })
       .catch((err) => {
-        customToast(err, ToastType.ERROR);
+        router.push("/login");
       });
   }, []);
 

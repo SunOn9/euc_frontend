@@ -1,8 +1,8 @@
 import { getHttpClient } from "@/config/httpClientsHelper";
-import { RemoveClubFeeRequest } from "@/generated/club-fee/club-fee.request";
+import { RemoveClubFeeRequest } from "@/generated/clubFee/clubFee.request";
 import { SimpleReply } from "@/generated/common";
 
-const API_URL = "/club-fee/remove";
+const API_URL = "/cluFee/remove";
 
 export async function clubRemove(
   request: RemoveClubFeeRequest

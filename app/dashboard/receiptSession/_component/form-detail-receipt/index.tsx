@@ -32,7 +32,7 @@ export default function ReceiptDetailForm(props: Props) {
     })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+          customToast(`Có lỗi xảy ra`, ToastType.ERROR);
           return;
         } else {
           if (res.payload) {
@@ -107,6 +107,7 @@ export default function ReceiptDetailForm(props: Props) {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={receipt}
       validationSchema={ValidateSchema}
       onSubmit={(values) => {
@@ -137,7 +138,7 @@ export default function ReceiptDetailForm(props: Props) {
                     placeholder="Nhập tiêu đề"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.title || receipt.title}
+                    value={values.title}
                   />
                   {errors.title && touched.title && (
                     <div className="text-red-500 text-xs">{errors.title}</div>
@@ -156,7 +157,7 @@ export default function ReceiptDetailForm(props: Props) {
                     placeholder="Nhập mô tả"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.description || receipt.description}
+                    value={values.description}
                   />
                   {errors.description && touched.description && (
                     <div className="text-red-500 text-xs">
@@ -177,7 +178,7 @@ export default function ReceiptDetailForm(props: Props) {
                     placeholder="Nhập số tiền"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.amount || receipt.amount}
+                    value={values.amount}
                   />
                   {errors.amount && touched.amount && (
                     <div className="text-red-500 text-xs">{errors.amount}</div>
@@ -198,7 +199,7 @@ export default function ReceiptDetailForm(props: Props) {
                     }}
                     options={methodList}
                     onBlur={handleBlur}
-                    value={values.method || receipt.method}
+                    value={values.method}
                   />
                   {errors.method && touched.method && (
                     <div className="text-red-500 text-xs">{errors.method}</div>

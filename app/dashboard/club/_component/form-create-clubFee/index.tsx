@@ -9,10 +9,11 @@ import { clubFeeCreate } from "@/service/api/clubFee/create";
 import { ToastType, customToast } from "@/components/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Input, Typography } from "antd";
+import { Club } from "@/generated/club/club";
 
 type Props = {
   onClose: CallableFunction;
-  id: number;
+  club: Club;
 };
 
 export default function ClubFeeForm(props: Props) {
@@ -36,10 +37,13 @@ export default function ClubFeeForm(props: Props) {
   const handleClubFeeCreate = (values: CreateClubFeeRequest) => {
     setIsLoading(true);
 
+    console.log(props.club);
+    const { clubId, ...other } = values;
+
     clubFeeCreate(
       CreateClubFeeRequest.create({
-        clubId: props.id,
-        ...values,
+        clubId: props.club.id,
+        ...other,
       })
     )
       .then((res) => {

@@ -125,7 +125,7 @@ export default function PaymentSessionDetailForm(props: Props) {
         props.onChange();
         handleClose();
       })
-      .catch(() => {
+      .catch((err) => {
         customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;

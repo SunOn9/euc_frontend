@@ -361,7 +361,9 @@ export default function ClubTable() {
                     />
                   );
                 case 4:
-                  return <ClubFeeForm onClose={handleCloseClubModal} id={id} />;
+                  return (
+                    <ClubFeeForm onClose={handleCloseClubModal} club={club} />
+                  );
                 default:
                   return null;
               }

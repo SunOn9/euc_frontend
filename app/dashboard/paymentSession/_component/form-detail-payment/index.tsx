@@ -32,7 +32,7 @@ export default function PaymentDetailForm(props: Props) {
     })
       .then((res) => {
         if (res.statusCode !== 200) {
-          customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+          customToast(`Có lỗi xảy ra`, ToastType.ERROR);
           return;
         } else {
           if (res.payload) {
@@ -85,29 +85,25 @@ export default function PaymentDetailForm(props: Props) {
       },
     });
 
-    console.log(request);
+    paymentUpdate(request)
+      .then((res) => {
+        setIsLoading(false);
 
-    // paymentUpdate(
-    //   request
-    // )
-    //   .then((res) => {
-    //     setIsLoading(false);
-
-    //     if (res.statusCode !== 200) {
-    //       customToast("Cập nhật phiên chi thất bại", ToastType.ERROR);
-    //       props.onClose();
-    //       return;
-    //     }
-    //     customToast(`Cập nhật phiên chi thành công`, ToastType.SUCCESS);
-    //     props.onClose();
-    //     props.onChange();
-    //   })
-    //   .catch((err) => {
-    //     setIsLoading(false);
-    //     customToast(`${err.response?.data?.message}`, ToastType.ERROR);
-    //     props.onClose();
-    //     return;
-    //   });
+        if (res.statusCode !== 200) {
+          customToast("Cập nhật phiên chi thất bại", ToastType.ERROR);
+          props.onClose();
+          return;
+        }
+        customToast(`Cập nhật phiên chi thành công`, ToastType.SUCCESS);
+        props.onClose();
+        props.onChange();
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+        props.onClose();
+        return;
+      });
   };
 
   return (

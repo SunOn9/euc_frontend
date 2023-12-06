@@ -136,6 +136,7 @@ export default function ReceiptSessionDetailForm(props: Props) {
   return (
     <>
       <Formik
+        enableReinitialize
         initialValues={props.receiptSession}
         validationSchema={props.isDetail ? null : ValidateSchema}
         onSubmit={(values) => {
@@ -170,7 +171,7 @@ export default function ReceiptSessionDetailForm(props: Props) {
                       placeholder="Nhập tiêu đề"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.title || props.receiptSession.title}
+                      value={values.title}
                     />
                     {errors.title && touched.title && (
                       <div className="text-red-500 text-xs">{errors.title}</div>
@@ -193,9 +194,7 @@ export default function ReceiptSessionDetailForm(props: Props) {
                       placeholder="Nhập mô tả"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={
-                        values.description || props.receiptSession.description
-                      }
+                      value={values.description}
                     />
                     {errors.description && touched.description && (
                       <div className="text-red-500 text-xs">
