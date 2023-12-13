@@ -110,7 +110,7 @@ export default function MemberTable(props: Props) {
               <Tooltip color="danger" content="Xoá">
                 <Button
                   isDisabled={
-                    props.event.actualEndEventDate !== undefined ||
+                    props.event.actualEndEventDate !== null ||
                     props.event.deletedAt !== null
                   }
                   className="text-md text-danger cursor-pointer active:opacity-50"
@@ -226,7 +226,7 @@ export default function MemberTable(props: Props) {
       <div className="flex items-center	 max-w-lg py-4 gap-4">
         <Button
           isDisabled={
-            props.event.actualEndEventDate !== undefined ||
+            props.event.actualEndEventDate !== null ||
             props.event.deletedAt !== null
           }
           color="primary"

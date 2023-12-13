@@ -134,7 +134,9 @@ export default function EventDetail() {
           Phiếu chi
         </Button>
         <Button
-          isDisabled={data.deletedAt !== null}
+          isDisabled={
+            data.deletedAt !== null || data.actualEndEventDate !== null
+          }
           color="primary"
           className="bold text-sm cursor-pointer active:opacity-50"
           disableRipple
@@ -180,6 +182,8 @@ export default function EventDetail() {
                   return (
                     <>
                       <PaymentSessionTable
+                        handleReload={handleChange}
+                        eventId={Number(id)}
                         paymentSessionList={data.paymentSession}
                       />
                     </>
@@ -188,6 +192,7 @@ export default function EventDetail() {
                   return (
                     <>
                       <ReceiptSessionTable
+                        eventId={Number(id)}
                         receiptSessionList={data.receiptSession}
                       />
                     </>

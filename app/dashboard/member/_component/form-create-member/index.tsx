@@ -198,8 +198,8 @@ export default function MemberForm(props: Props) {
                   <DatePicker
                     className="min-w-full	"
                     placeholder="Chọn ngày sinh"
-                    onChange={(_, dateString) => {
-                      setFieldValue("birthday", new Date(dateString));
+                    onChange={(date, _) => {
+                      setFieldValue("birthday", date.toDate());
                     }}
                     onBlur={handleBlur}
                     format={dateFormat}

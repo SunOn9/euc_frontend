@@ -11,6 +11,8 @@ import { href } from "@/config/env";
 
 type Props = {
   receiptSessionList: Event_ReceiptSession[];
+  eventId: number;
+  // hanleChange: CallableFunction
 };
 export default function ReceiptSessionTable(props: Props) {
   const columns: TableProps<DataType>["columns"] = [
@@ -141,7 +143,7 @@ export default function ReceiptSessionTable(props: Props) {
   return (
     <div>
       <div className="flex items-center	 max-w-lg py-4">
-        <h1 className={title({ size: "sm" })}>Quản lý phiếu chi&nbsp;</h1>
+        <h1 className={title({ size: "sm" })}>Quản lý phiếu thu&nbsp;</h1>
         {/* <Tooltip content="Tạo">
           <Button
             className="text-sm cursor-pointer active:opacity-50"

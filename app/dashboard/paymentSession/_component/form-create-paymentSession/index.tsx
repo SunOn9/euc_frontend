@@ -14,6 +14,8 @@ import { paymentSessionCreate } from "@/service/api/paymentSession/create";
 
 type Props = {
   onClose: CallableFunction;
+  eventId?: number;
+  handleReload?: CallableFunction;
 };
 
 export default function PaymentSessionForm(props: Props) {
@@ -28,6 +30,10 @@ export default function PaymentSessionForm(props: Props) {
   const handlePaymentSessionCreate = (values: CreatePaymentSessionRequest) => {
     setIsLoading(true);
 
+    if (props.eventId) {
+      values.eventId = props.eventId;
+    }
+
     paymentSessionCreate(values)
       .then((res) => {
         setIsLoading(false);
@@ -39,6 +45,9 @@ export default function PaymentSessionForm(props: Props) {
         }
         customToast(`Tạo phiếu chi thành công`, ToastType.SUCCESS);
         queryClient.invalidateQueries(["paymentSessionSearch"]);
+        if (props.handleReload) {
+          props.handleReload();
+        }
         props.onClose();
       })
       .catch((err) => {

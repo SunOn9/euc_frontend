@@ -130,8 +130,8 @@ export default function EventForm(props: Props) {
                   <DatePicker
                     className="min-w-full	"
                     placeholder="Chọn ngày bắt đầu"
-                    onChange={(_, dateString) => {
-                      setFieldValue("startEventDate", new Date(dateString));
+                    onChange={(date, _) => {
+                      if (date) setFieldValue("startEventDate", date.toDate());
                     }}
                     onBlur={handleBlur}
                     format={dateFormat}
@@ -151,8 +151,8 @@ export default function EventForm(props: Props) {
                   <DatePicker
                     className="min-w-full	"
                     placeholder="Chọn ngày kết thúc"
-                    onChange={(_, dateString) => {
-                      setFieldValue("endEventDate", new Date(dateString));
+                    onChange={(date, _) => {
+                      if (date) setFieldValue("endEventDate", date.toDate());
                     }}
                     onBlur={handleBlur}
                     format={dateFormat}

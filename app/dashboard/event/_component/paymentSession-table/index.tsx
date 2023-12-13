@@ -3,15 +3,27 @@ import React, { useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import { ActionType, DataType, intoTable, statusColorMapStatus } from "./type";
-import { Button, Chip, Tooltip } from "@nextui-org/react";
-import { EyeIcon } from "@/components/icons";
+import {
+  Button,
+  Chip,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Tooltip,
+} from "@nextui-org/react";
+import { AddIcon, EyeIcon } from "@/components/icons";
 import { title } from "@/components/primitives";
 import { Event_PaymentSession } from "@/generated/event/event";
 import { href } from "@/config/env";
+import PaymentSessionForm from "@/app/dashboard/paymentSession/_component/form-create-paymentSession";
 
 type Props = {
   paymentSessionList: Event_PaymentSession[];
+  eventId: number;
+  handleReload: CallableFunction;
 };
+
 export default function PaymentSessionTable(props: Props) {
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -137,12 +149,19 @@ export default function PaymentSessionTable(props: Props) {
   const paymentSessionList = props.paymentSessionList;
 
   const [page, setPage] = useState(1);
+  const handleOpenPaymentSessionModal = () => {
+    setOpenPaymentSession(true);
+  };
+  const handleClosePaymentSessionModal = () => {
+    setOpenPaymentSession(false);
+  };
+  const [openPaymentSession, setOpenPaymentSession] = useState(false);
 
   return (
     <div>
       <div className="flex items-center	 max-w-lg py-4">
         <h1 className={title({ size: "sm" })}>Quản lý phiếu chi&nbsp;</h1>
-        {/* <Tooltip content="Tạo">
+        <Tooltip content="Tạo">
           <Button
             className="text-sm cursor-pointer active:opacity-50"
             variant="light"
@@ -150,10 +169,10 @@ export default function PaymentSessionTable(props: Props) {
             disableRipple
             disableAnimation
             startContent={<AddIcon />}
-            onPress={() => handleOpenPaymentSessionModal(1)}
+            onPress={handleOpenPaymentSessionModal}
           />
         </Tooltip>
-        <Tooltip content="Bộ lọc">
+        {/* <Tooltip content="Bộ lọc">
           <Button
             className="text-sm cursor-pointer active:opacity-50"
             variant="light"
@@ -180,6 +199,28 @@ export default function PaymentSessionTable(props: Props) {
           x: 1300,
         }}
       />
+
+      <Modal
+        isOpen={openPaymentSession}
+        onClose={handleClosePaymentSessionModal}
+        size="2xl"
+        isDismissable={false}
+      >
+        <ModalContent>
+          <ModalHeader className="">
+            <span>Tạo phiếu chi</span>
+          </ModalHeader>
+          <ModalBody>
+            <>
+              <PaymentSessionForm
+                eventId={props.eventId}
+                handleReload={props.handleReload}
+                onClose={handleClosePaymentSessionModal}
+              />
+            </>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
