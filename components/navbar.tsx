@@ -21,6 +21,7 @@ import Logo from "./logo";
 import NavBarDropDown from "./navbar-dropdown";
 import { User } from "@/generated/user/user";
 import { useEffect, useState } from "react";
+import { EnumProto_UserRole } from "@/generated/enumps";
 
 export const Navbar = () => {
   const [userInfo, setUserInfo] = useState(User.create());
@@ -54,24 +55,83 @@ export const Navbar = () => {
           </NextLink>
         </NavbarBrand>
         <ul className="hidden md:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) =>
-            item.children ? (
-              <NavBarDropDown key={item.key} item={item} />
-            ) : (
-              <NextLink
-                key={item.key}
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
-                  "text-sm"
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            )
-          )}
+          {siteConfig.navItems.map((item) => {
+            let res = false;
+
+            switch (item.key) {
+              case "user": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.STAFF
+                ) {
+                  res = true;
+                }
+                break;
+              }
+              case "club": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.STAFF
+                ) {
+                  res = true;
+                }
+                break;
+              }
+              case "area": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.STAFF
+                ) {
+                  res = true;
+                }
+                break;
+              }
+
+              case "payment": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.TREASURER
+                ) {
+                  res = true;
+                }
+                break;
+              }
+
+              case "receipt": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.TREASURER
+                ) {
+                  res = true;
+                }
+                break;
+              }
+              default: {
+                break;
+              }
+            }
+
+            if (res) {
+              return null;
+            } else {
+              return item.children ? (
+                <NavBarDropDown key={item.key} item={item} />
+              ) : (
+                <NextLink
+                  key={item.key}
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "data-[active=true]:text-primary data-[active=true]:font-medium",
+                    "text-sm"
+                  )}
+                  color="foreground"
+                  href={item.href}
+                >
+                  {item.label}
+                </NextLink>
+              );
+            }
+          })}
         </ul>
       </NavbarContent>
       <NavbarContent

@@ -1119,7 +1119,7 @@
     "@nextui-org/react-rsc-utils" "2.0.7"
     "@nextui-org/shared-utils" "2.0.2"
 
-"@nextui-org/react@^2.2.9":
+"@nextui-org/react@^2.1.13":
   version "2.2.9"
   resolved "https://registry.yarnpkg.com/@nextui-org/react/-/react-2.2.9.tgz#aa4e872492a710fdffffd431679e6cbd857d3653"
   integrity sha512-QHkUQTxI9sYoVjrvTpYm5K68pMDRqD13+DVzdsrkJuETGhbvE2c2CCGc4on9EwXC3JsOxuP/OyqaAmOIuHhYkA==

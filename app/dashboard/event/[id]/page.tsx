@@ -92,7 +92,7 @@ export default function EventDetail() {
 
   useEffect(() => {
     handleChange();
-  }, []);
+  }, [id]);
 
   return (
     <section className="flex flex-col py-4">

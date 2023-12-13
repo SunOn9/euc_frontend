@@ -1,5 +1,6 @@
 "use client";
 import { logout } from "@/service/api/auth/logout";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -9,10 +10,11 @@ export default function Logout() {
   useEffect(() => {
     logout()
       .then(() => {
+        Cookies.remove("euc.sessionid");
         router.push("/login");
       })
       .catch((err) => {
-        router.push("/login");
+        console.log(err);
       });
   }, []);
 
