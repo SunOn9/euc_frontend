@@ -92,7 +92,7 @@ export default function EventDetail() {
 
   useEffect(() => {
     handleChange();
-  }, [id]);
+  }, []);
 
   return (
     <section className="flex flex-col py-4">
@@ -147,7 +147,7 @@ export default function EventDetail() {
         </Button>
       </div>
 
-      <EventDetailForm event={data} onChange={handleChange} />
+      <EventDetailForm event={data} />
       {change ? (
         <MemberTable event={data} onChange={handleChange} />
       ) : (

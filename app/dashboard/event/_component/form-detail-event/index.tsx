@@ -9,7 +9,6 @@ import { Input, Typography } from "antd";
 
 type Props = {
   event: Event;
-  onChange: CallableFunction;
 };
 
 export default function EventDetailForm(props: Props) {
