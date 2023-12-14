@@ -193,6 +193,7 @@ export default function EventDetail() {
                     <>
                       <ReceiptSessionTable
                         eventId={Number(id)}
+                        handleReload={handleChange}
                         receiptSessionList={data.receiptSession}
                       />
                     </>

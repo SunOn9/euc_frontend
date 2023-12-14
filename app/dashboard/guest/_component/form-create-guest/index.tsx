@@ -11,15 +11,21 @@ import { ToastType, customToast } from "@/components/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
 import { DatePicker, Input, Select, Typography } from "antd";
 import { dateFormat } from "@/config/env";
-import { EnumProto_Gender, EnumProto_MemberType } from "@/generated/enumps";
+import {
+  EnumProto_Gender,
+  EnumProto_MemberType,
+  EnumProto_UserRole,
+} from "@/generated/enumps";
 import {
   convertEnumGenderToVietnamese,
   convertEnumMemberTypeToVietnamese,
 } from "@/service/helper";
 import useSearchArea from "@/components/hooks/useSearchArea";
+import { User } from "@/generated/user/user";
 
 type Props = {
   onClose: CallableFunction;
+  userInfo: User;
 };
 
 export default function GuestForm(props: Props) {
@@ -69,11 +75,14 @@ export default function GuestForm(props: Props) {
       .test("valid-type", "Loại không hợp lệ", (value) => {
         return value !== EnumProto_Gender.UNRECOGNIZED;
       }),
-    clubId: Yup.string()
-      .required("Bắt buộc")
-      .test("valid-type", "Câu lạc bộ không hợp lệ", (value) => {
-        return value !== "0" && value !== undefined;
-      }),
+    clubId:
+      props.userInfo.role !== EnumProto_UserRole.ADMIN
+        ? Yup.string()
+        : Yup.string()
+            .required("Bắt buộc")
+            .test("valid-type", "Câu lạc bộ không hợp lệ", (value) => {
+              return value !== "0" && value !== undefined;
+            }),
   });
 
   const handleGuestCreate = (values: CreateGuestRequest) => {
@@ -207,27 +216,30 @@ export default function GuestForm(props: Props) {
                   )}
                 </div>
               </div>
-
-              <div className="grid grid-cols-5 items-center">
-                <Typography.Paragraph className="justify-self-center col-span-1">
-                  CLB:
-                </Typography.Paragraph>
-                <div className="col-span-4">
-                  <Select
-                    className="min-w-full	"
-                    placeholder="Chọn câu lạc bộ"
-                    onSelect={(value) => {
-                      setFieldValue("clubId", value);
-                    }}
-                    options={clubListData}
-                    onBlur={handleBlur}
-                    value={values.clubId}
-                  />
-                  {errors.clubId && touched.clubId && (
-                    <div className="text-red-500 text-xs">{errors.clubId}</div>
-                  )}
+              {props.userInfo.role !== EnumProto_UserRole.ADMIN ? null : (
+                <div className="grid grid-cols-5 items-center">
+                  <Typography.Paragraph className="justify-self-center col-span-1">
+                    CLB:
+                  </Typography.Paragraph>
+                  <div className="col-span-4">
+                    <Select
+                      className="min-w-full	"
+                      placeholder="Chọn câu lạc bộ"
+                      onSelect={(value) => {
+                        setFieldValue("clubId", value);
+                      }}
+                      options={clubListData}
+                      onBlur={handleBlur}
+                      value={values.clubId}
+                    />
+                    {errors.clubId && touched.clubId && (
+                      <div className="text-red-500 text-xs">
+                        {errors.clubId}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="flex justify-end mt-4 gap-4">

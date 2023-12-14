@@ -178,11 +178,7 @@ export default function MemberTable(props: Props) {
     const memberListOptionsTmp: any[] = [];
 
     for (const each of memberList) {
-      if (
-        each.memberInClub[0].club?.id &&
-        each.memberInClub[0].club?.id === props.event.club?.id &&
-        !eventMemberList.includes(each.id)
-      ) {
+      if (!eventMemberList.includes(each.id)) {
         memberListOptionsTmp.push({ value: each.id, label: each.name });
       }
     }

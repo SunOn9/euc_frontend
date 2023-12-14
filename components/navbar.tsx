@@ -68,15 +68,6 @@ export const Navbar = () => {
                 }
                 break;
               }
-              case "club": {
-                if (
-                  userInfo.role !== EnumProto_UserRole.ADMIN &&
-                  userInfo.role !== EnumProto_UserRole.STAFF
-                ) {
-                  res = true;
-                }
-                break;
-              }
               case "area": {
                 if (
                   userInfo.role !== EnumProto_UserRole.ADMIN &&
@@ -163,17 +154,69 @@ export const Navbar = () => {
       </NavbarContent>
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {mergeNav.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <NextLink
-                color={item.key === "logout" ? "danger" : "foreground"}
-                className={item.key === "logout" ? "text-danger" : ""}
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarMenuItem>
-          ))}
+          {mergeNav.map((item, index) => {
+            let res = false;
+
+            switch (item.key) {
+              case "user": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.STAFF
+                ) {
+                  res = true;
+                }
+                break;
+              }
+              case "area": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.STAFF
+                ) {
+                  res = true;
+                }
+                break;
+              }
+
+              case "payment": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.TREASURER
+                ) {
+                  res = true;
+                }
+                break;
+              }
+
+              case "receipt": {
+                if (
+                  userInfo.role !== EnumProto_UserRole.ADMIN &&
+                  userInfo.role !== EnumProto_UserRole.TREASURER
+                ) {
+                  res = true;
+                }
+                break;
+              }
+              default: {
+                break;
+              }
+            }
+
+            if (res) {
+              return null;
+            } else {
+              return (
+                <NavbarMenuItem key={`${item}-${index}`}>
+                  <NextLink
+                    color={item.key === "logout" ? "danger" : "foreground"}
+                    className={item.key === "logout" ? "text-danger" : ""}
+                    href={item.href}
+                  >
+                    {item.label}
+                  </NextLink>
+                </NavbarMenuItem>
+              );
+            }
+          })}
         </div>
       </NavbarMenu>
     </NextUINavbar>

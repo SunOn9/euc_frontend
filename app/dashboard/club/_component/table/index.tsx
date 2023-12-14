@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import { ActionType, DataType, intoTable } from "./type";
@@ -34,6 +34,9 @@ import { ClubReply } from "@/generated/club/club.reply";
 import { defaulLimit } from "@/config/env";
 import { Club_ClubFee } from "@/generated/club/club";
 import ClubFeeForm from "../form-create-clubFee";
+import { User } from "@/generated/user/user";
+import { EnumProto_UserRole } from "@/generated/enumps";
+import FundForm from "../form-fund";
 
 export default function ClubTable() {
   const columns: TableProps<DataType>["columns"] = [
@@ -160,6 +163,14 @@ export default function ClubTable() {
     setId(0);
   };
 
+  const handleOpenFund = () => {
+    setOpenFund(true);
+  };
+
+  const handleCloseFund = () => {
+    setOpenFund(false);
+  };
+
   const handleOpenClubModal = async (type: number, id?: number) => {
     let data: void | ClubReply | undefined;
     if (id) {
@@ -216,6 +227,28 @@ export default function ClubTable() {
       });
   };
 
+  const [userInfo, setUserInfo] = useState(User.create());
+
+  useEffect(() => {
+    const item: User = JSON.parse(localStorage.getItem("user-info") ?? "");
+    if (item) {
+      setUserInfo(item);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      userInfo.role !== EnumProto_UserRole.ADMIN &&
+      userInfo.role !== EnumProto_UserRole.STAFF
+    )
+      setClubSearchParam({
+        id: userInfo.club?.id,
+        page: 1,
+        isExtraArea: true,
+        isExtraClubFee: true,
+      });
+  }, []);
+
   const { clubList, total, setClubSearchParam } = useSearchClub();
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
@@ -225,6 +258,7 @@ export default function ClubTable() {
   const [id, setId] = useState(0);
   const [club, setClub] = useState(Club.create());
   const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [openFund, setOpenFund] = useState(false);
 
   return (
     <div>
@@ -254,6 +288,17 @@ export default function ClubTable() {
             }}
           />
         </Tooltip>
+        {userInfo.role === EnumProto_UserRole.TREASURER ? (
+          <Button
+            className="text-md cursor-pointer active:opacity-50"
+            size="sm"
+            disableRipple
+            disableAnimation
+            onPress={handleOpenFund}
+          >
+            Xuất file
+          </Button>
+        ) : null}
       </div>
       {/* <ClubFilterForm
         showFilter={showFilter}
@@ -285,6 +330,25 @@ export default function ClubTable() {
           x: 1300,
         }}
       />
+
+      <Modal
+        size="2xl"
+        isOpen={openFund}
+        onClose={handleCloseFund}
+        placement="top-center"
+        isDismissable={false}
+      >
+        <ModalContent>
+          <>
+            <ModalHeader className="flex flex-col">
+              Xuất dữ liệu quỹ
+            </ModalHeader>
+            <ModalBody>
+              <FundForm onClose={handleCloseFund} />
+            </ModalBody>
+          </>
+        </ModalContent>
+      </Modal>
       <Modal
         size="xs"
         isOpen={open}

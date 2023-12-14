@@ -12,6 +12,8 @@ import { receiptSessionCreate } from "@/service/api/receiptSession/create";
 
 type Props = {
   onClose: CallableFunction;
+  handleReload?: CallableFunction;
+  eventId?: number;
 };
 
 export default function ReceiptSessionForm(props: Props) {
@@ -26,6 +28,10 @@ export default function ReceiptSessionForm(props: Props) {
   const handleReceiptSessionCreate = (values: CreateReceiptSessionRequest) => {
     setIsLoading(true);
 
+    if (props.eventId) {
+      values.eventId = props.eventId;
+    }
+
     receiptSessionCreate(values)
       .then((res) => {
         setIsLoading(false);
@@ -37,6 +43,9 @@ export default function ReceiptSessionForm(props: Props) {
         }
         customToast(`Tạo phiếu thu thành công`, ToastType.SUCCESS);
         queryClient.invalidateQueries(["receiptSessionSearch"]);
+        if (props.handleReload) {
+          props.handleReload();
+        }
         props.onClose();
       })
       .catch((err) => {

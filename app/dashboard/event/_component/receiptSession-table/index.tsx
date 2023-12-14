@@ -3,16 +3,25 @@ import React, { useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import { ActionType, DataType, intoTable, statusColorMapStatus } from "./type";
-import { Button, Chip, Tooltip } from "@nextui-org/react";
-import { EyeIcon } from "@/components/icons";
+import {
+  Button,
+  Chip,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Tooltip,
+} from "@nextui-org/react";
+import { AddIcon, EyeIcon } from "@/components/icons";
 import { title } from "@/components/primitives";
 import { Event_ReceiptSession } from "@/generated/event/event";
 import { href } from "@/config/env";
+import ReceiptSessionForm from "@/app/dashboard/receiptSession/_component/form-create-receiptSession";
 
 type Props = {
   receiptSessionList: Event_ReceiptSession[];
   eventId: number;
-  // hanleChange: CallableFunction
+  handleReload: CallableFunction;
 };
 export default function ReceiptSessionTable(props: Props) {
   const columns: TableProps<DataType>["columns"] = [
@@ -139,12 +148,19 @@ export default function ReceiptSessionTable(props: Props) {
   const receiptSessionList = props.receiptSessionList;
 
   const [page, setPage] = useState(1);
+  const handleOpenReceiptSessionModal = () => {
+    setOpenReceiptSession(true);
+  };
+  const handleCloseReceiptSessionModal = () => {
+    setOpenReceiptSession(false);
+  };
+  const [openReceiptSession, setOpenReceiptSession] = useState(false);
 
   return (
     <div>
       <div className="flex items-center	 max-w-lg py-4">
         <h1 className={title({ size: "sm" })}>Quản lý phiếu thu&nbsp;</h1>
-        {/* <Tooltip content="Tạo">
+        <Tooltip content="Tạo">
           <Button
             className="text-sm cursor-pointer active:opacity-50"
             variant="light"
@@ -152,10 +168,10 @@ export default function ReceiptSessionTable(props: Props) {
             disableRipple
             disableAnimation
             startContent={<AddIcon />}
-            onPress={() => handleOpenReceiptSessionModal(1)}
+            onPress={handleOpenReceiptSessionModal}
           />
         </Tooltip>
-        <Tooltip content="Bộ lọc">
+        {/* <Tooltip content="Bộ lọc">
           <Button
             className="text-sm cursor-pointer active:opacity-50"
             variant="light"
@@ -182,6 +198,28 @@ export default function ReceiptSessionTable(props: Props) {
           x: 1300,
         }}
       />
+
+      <Modal
+        isOpen={openReceiptSession}
+        onClose={handleCloseReceiptSessionModal}
+        size="2xl"
+        isDismissable={false}
+      >
+        <ModalContent>
+          <ModalHeader className="">
+            <span>Tạo phiếu thu</span>
+          </ModalHeader>
+          <ModalBody>
+            <>
+              <ReceiptSessionForm
+                eventId={props.eventId}
+                handleReload={props.handleReload}
+                onClose={handleCloseReceiptSessionModal}
+              />
+            </>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

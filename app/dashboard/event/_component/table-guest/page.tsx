@@ -175,11 +175,7 @@ export default function GuestTable(props: Props) {
     const guestListOptionsTmp: any[] = [];
 
     for (const each of guestList) {
-      if (
-        each.club?.id &&
-        each.club?.id === props.event.club?.id &&
-        !eventGuestList.includes(each.id)
-      ) {
+      if (!eventGuestList.includes(each.id)) {
         guestListOptionsTmp.push({ value: each.id, label: each.name });
       }
     }

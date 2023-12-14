@@ -15,6 +15,7 @@ import {
   EnumProto_Gender,
   EnumProto_MemberStatus,
   EnumProto_MemberType,
+  EnumProto_UserRole,
 } from "@/generated/enumps";
 import {
   convertEnumGenderToVietnamese,
@@ -22,9 +23,11 @@ import {
   convertEnumMemberTypeToVietnamese,
 } from "@/service/helper";
 import useSearchArea from "@/components/hooks/useSearchArea";
+import { User } from "@/generated/user/user";
 
 type Props = {
   onClose: CallableFunction;
+  userInfo: User;
 };
 
 export default function MemberForm(props: Props) {
@@ -86,11 +89,14 @@ export default function MemberForm(props: Props) {
       .test("valid-type", "Loại không hợp lệ", (value) => {
         return value !== EnumProto_Gender.UNRECOGNIZED;
       }),
-    clubId: Yup.string()
-      .required("Bắt buộc")
-      .test("valid-type", "Câu lạc bộ không hợp lệ", (value) => {
-        return value !== "0" && value !== undefined;
-      }),
+    clubId:
+      props.userInfo.role !== EnumProto_UserRole.ADMIN
+        ? Yup.string()
+        : Yup.string()
+            .required("Bắt buộc")
+            .test("valid-type", "Câu lạc bộ không hợp lệ", (value) => {
+              return value !== "0" && value !== undefined;
+            }),
     areaId: Yup.string()
       .required("Bắt buộc")
       .test("valid-type", "Khu vực không hợp lệ", (value) => {
@@ -199,7 +205,7 @@ export default function MemberForm(props: Props) {
                     className="min-w-full	"
                     placeholder="Chọn ngày sinh"
                     onChange={(date, _) => {
-                      setFieldValue("birthday", date.toDate());
+                      setFieldValue("birthday", date?.toDate());
                     }}
                     onBlur={handleBlur}
                     format={dateFormat}
@@ -274,27 +280,30 @@ export default function MemberForm(props: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-5 items-center">
-                <Typography.Paragraph className="justify-self-center col-span-1">
-                  CLB:
-                </Typography.Paragraph>
-                <div className="col-span-4">
-                  <Select
-                    className="min-w-full	"
-                    placeholder="Chọn câu lạc bộ"
-                    onSelect={(value) => {
-                      setFieldValue("clubId", value);
-                    }}
-                    options={clubListData}
-                    onBlur={handleBlur}
-                    value={values.clubId}
-                  />
-                  {errors.clubId && touched.clubId && (
-                    <div className="text-red-500 text-xs">{errors.clubId}</div>
-                  )}
+              {props.userInfo.role !== EnumProto_UserRole.ADMIN ? null : (
+                <div className="grid grid-cols-5 items-center">
+                  <Typography.Paragraph className="justify-self-center col-span-1">
+                    CLB:
+                  </Typography.Paragraph>
+                  <div className="col-span-4">
+                    <Select
+                      className="min-w-full	"
+                      placeholder="Chọn câu lạc bộ"
+                      onSelect={(value) => {
+                        setFieldValue("clubId", value);
+                      }}
+                      options={clubListData}
+                      onBlur={handleBlur}
+                      value={values.clubId}
+                    />
+                    {errors.clubId && touched.clubId && (
+                      <div className="text-red-500 text-xs">
+                        {errors.clubId}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-
+              )}
               <div className="grid grid-cols-5 items-center">
                 <Typography.Paragraph className="justify-self-center col-span-1">
                   Quê:

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import {
@@ -40,6 +40,8 @@ import MemberFilterForm from "../form-filter-member";
 import { APP_CONFIG, defaulLimit } from "@/config/env";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { User } from "@/generated/user/user";
+import { EnumProto_UserRole } from "@/generated/enumps";
 
 export default function MemberTable() {
   const cookies = Cookies.get("euc.sessionid"); // => 'value cookies'
@@ -266,6 +268,15 @@ export default function MemberTable() {
       });
   };
 
+  const [userInfo, setUserInfo] = useState(User.create());
+
+  useEffect(() => {
+    const item: User = JSON.parse(localStorage.getItem("user-info") ?? "");
+    if (item) {
+      setUserInfo(item);
+    }
+  }, []);
+
   const { memberList, total, setMemberSearchParam, memberSearchParam } =
     useSearchMember();
   const [page, setPage] = useState(1);
@@ -398,7 +409,10 @@ export default function MemberTable() {
                 case 1:
                   return (
                     <>
-                      <MemberForm onClose={handleCloseMemberModal} />
+                      <MemberForm
+                        userInfo={userInfo}
+                        onClose={handleCloseMemberModal}
+                      />
                     </>
                   );
                 case 2:

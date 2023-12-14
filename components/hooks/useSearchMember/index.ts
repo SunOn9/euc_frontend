@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Member } from "@/generated/member/member";
 import { memberSearch } from "@/service/api/member/search";
 import { GetMemberConditionRequest } from "@/generated/member/member.request";
+import { User } from "@/generated/user/user";
+
 
 export default function useSearchMember() {
   const [memberSearchParam, setMemberSearchParam] =

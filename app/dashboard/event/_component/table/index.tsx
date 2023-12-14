@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import {
@@ -38,6 +38,7 @@ import EventFilterForm from "../form-filter-event";
 import { defaulLimit } from "@/config/env";
 import { useRouter } from "next/navigation";
 import EventUpdateForm from "../form-update-event";
+import { User } from "@/generated/user/user";
 
 export default function EventTable() {
   const columns: TableProps<DataType>["columns"] = [
@@ -176,7 +177,7 @@ export default function EventTable() {
       })
         .then((res) => {
           if (res.statusCode !== 200) {
-            customToast(`${err.response?.data?.message}`, ToastType.ERROR);
+            customToast(res.message, ToastType.ERROR);
             return;
           } else {
             if (res.payload) {
@@ -215,12 +216,21 @@ export default function EventTable() {
         queryClient.invalidateQueries(["eventSearch"]);
         handleClose();
       })
-      .catch(() => {
+      .catch((err) => {
         customToast(`${err.response?.data?.message}`, ToastType.ERROR);
         handleClose();
         return;
       });
   };
+
+  const [userInfo, setUserInfo] = useState(User.create());
+
+  useEffect(() => {
+    const item: User = JSON.parse(localStorage.getItem("user-info") ?? "");
+    if (item) {
+      setUserInfo(item);
+    }
+  }, []);
 
   const { eventList, total, setEventSearchParam } = useSearchEvent();
   const [page, setPage] = useState(1);
@@ -349,7 +359,10 @@ export default function EventTable() {
                 case 1:
                   return (
                     <>
-                      <EventForm onClose={handleCloseEventModal} />
+                      <EventForm
+                        userInfo={userInfo}
+                        onClose={handleCloseEventModal}
+                      />
                     </>
                   );
                 // case 2:

@@ -11,12 +11,14 @@ import { CreateEventRequest } from "@/generated/event/event.request";
 import { eventCreate } from "@/service/api/event/create";
 import useSearchClub from "@/components/hooks/useSearchClub";
 import { dateFormat } from "@/config/env";
-import { EnumProto_EventType } from "@/generated/enumps";
+import { EnumProto_EventType, EnumProto_UserRole } from "@/generated/enumps";
 import { convertEnumEventTypeToVietnamese } from "@/service/helper";
 import useSearchPlace from "@/components/hooks/useSearchPlace";
+import { User } from "@/generated/user/user";
 
 type Props = {
   onClose: CallableFunction;
+  userInfo: User;
 };
 
 export default function EventForm(props: Props) {
@@ -48,11 +50,14 @@ export default function EventForm(props: Props) {
     name: Yup.string().required("Bắt buộc"),
     startEventDate: Yup.string().required("Bắt buộc"),
     type: Yup.string().required("Bắt buộc"),
-    clubId: Yup.string()
-      .required("Bắt buộc")
-      .test("valid-type", "Câu lạc bộ không hợp lệ", (value) => {
-        return value !== "0";
-      }),
+    clubId:
+      props.userInfo.role !== EnumProto_UserRole.ADMIN
+        ? Yup.string()
+        : Yup.string()
+            .required("Bắt buộc")
+            .test("valid-type", "Câu lạc bộ không hợp lệ", (value) => {
+              return value !== "0" && value !== undefined;
+            }),
     endEventDate: Yup.string().required("Bắt buộc"),
   });
 
@@ -131,7 +136,7 @@ export default function EventForm(props: Props) {
                     className="min-w-full	"
                     placeholder="Chọn ngày bắt đầu"
                     onChange={(date, _) => {
-                      if (date) setFieldValue("startEventDate", date.toDate());
+                      if (date) setFieldValue("startEventDate", date?.toDate());
                     }}
                     onBlur={handleBlur}
                     format={dateFormat}
@@ -152,7 +157,7 @@ export default function EventForm(props: Props) {
                     className="min-w-full	"
                     placeholder="Chọn ngày kết thúc"
                     onChange={(date, _) => {
-                      if (date) setFieldValue("endEventDate", date.toDate());
+                      if (date) setFieldValue("endEventDate", date?.toDate());
                     }}
                     onBlur={handleBlur}
                     format={dateFormat}
@@ -184,26 +189,30 @@ export default function EventForm(props: Props) {
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-5 items-center">
-                <Typography.Paragraph className="justify-self-center col-span-1">
-                  CLB:
-                </Typography.Paragraph>
-                <div className="col-span-4">
-                  <Select
-                    className="min-w-full	"
-                    placeholder="Chọn câu lạc bộ"
-                    onSelect={(value) => {
-                      setFieldValue("clubId", value);
-                    }}
-                    options={clubListData}
-                    onBlur={handleBlur}
-                    value={values.clubId}
-                  />
-                  {errors.clubId && touched.clubId && (
-                    <div className="text-red-500 text-xs">{errors.clubId}</div>
-                  )}
+              {props.userInfo.role !== EnumProto_UserRole.ADMIN ? null : (
+                <div className="grid grid-cols-5 items-center">
+                  <Typography.Paragraph className="justify-self-center col-span-1">
+                    CLB:
+                  </Typography.Paragraph>
+                  <div className="col-span-4">
+                    <Select
+                      className="min-w-full	"
+                      placeholder="Chọn câu lạc bộ"
+                      onSelect={(value) => {
+                        setFieldValue("clubId", value);
+                      }}
+                      options={clubListData}
+                      onBlur={handleBlur}
+                      value={values.clubId}
+                    />
+                    {errors.clubId && touched.clubId && (
+                      <div className="text-red-500 text-xs">
+                        {errors.clubId}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="grid grid-cols-5 items-center">
                 <Typography.Paragraph className="justify-self-center col-span-1">
                   Địa điểm:

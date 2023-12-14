@@ -1,4 +1,5 @@
 import { defaulLimit } from "@/config/env";
+import { EnumProto_MemberType } from "@/generated/enumps";
 import { Event_Guest } from "@/generated/event/event";
 import { convertEnumGenderToVietnamese } from "@/service/helper";
 
@@ -30,7 +31,7 @@ export function intoTable(guestList: Event_Guest[], page: number) {
       stt: (page - 1) * defaulLimit + index + 1,
       name: guest.name,
       nickName: guest.nickName,
-      type: guest.type ? true : false,
+      type: guest.type === EnumProto_MemberType.STUDENT ? true : false,
       gender: convertEnumGenderToVietnamese(guest.gender),
       action: {
         id: guest.id,
