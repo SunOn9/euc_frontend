@@ -247,7 +247,7 @@ export default function ClubTable() {
         isExtraArea: true,
         isExtraClubFee: true,
       });
-  }, []);
+  }, [userInfo]);
 
   const { clubList, total, setClubSearchParam } = useSearchClub();
   const [page, setPage] = useState(1);
